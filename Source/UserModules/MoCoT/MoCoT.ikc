@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<group name="MoCoT" description="Coordinat transformation">
+
+  <description type="text">
+    This module is used to transform different kinds of coordinates to the angels of the servo motors.
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="MoCoT"
+	name="MoCoT"
+	/>
+  </example>
+
+  <!--input 
+      name="POLAR_IN" 
+      description="Polar coordinates (angle, radious)" 
+      size="2"
+      /-->
+  
+  <input 
+      name="CART_IN" 
+      description="Cartesian coordinates (x, y)" 
+      size="2"
+      />
+  
+  <output 
+      name="SERVO_OUT" 
+      description="Angles for the servos (degrees)" 
+      size="4" 
+      />
+
+  <parameter name="ABCX" type="float" default="0.33f" min="0" max="1.0" description="Arm base coordinate (x)." />
+  <parameter name="ABCY" type="float" default="0.78f" min="0" max="1.0" description="Arm base coordinate (y)." />
+
+  <module class="MoCoT" />
+
+  <files>
+    <file>MoCoT.h</file>
+    <file>MoCoT.cc</file>
+    <file>MoCoT.ikc</file>
+  </files>
+
+</group>
+
