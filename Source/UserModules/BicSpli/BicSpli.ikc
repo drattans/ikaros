@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<group name="BicSpli" description="minimal example module">
+
+  <description type="text">
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="BicSpli"
+	name="BicSpli"
+	/>
+  </example>
+
+  <!--input 
+      name="INPUT" 
+      description="Finger-to-object angle, finger-push angle, object-movement angle" 
+      size="3"
+      /-->
+
+  <input 
+      name="FIPO" 
+      description="Position of fingertip (x,y)"
+      size="2"
+      />
+
+  <input 
+      name="PUPO" 
+      description="Position of pushable center (x,y)"
+      size="2"
+      />
+
+  <output 
+      name="NPO" 
+      description="New finger position (x,y)"
+      size="2"
+      />
+
+  <!--input 
+      name="INPUT" 
+      description="Finger-to-object angle, finger-push angle, object-movement angle" 
+      size="2"
+      /-->
+
+  <module class="BicSpli" />
+
+  <files>
+    <file>BicSpli.h</file>
+    <file>BicSpli.cc</file>
+    <file>BicSpli.ikc</file>
+  </files>
+
+</group>
+
