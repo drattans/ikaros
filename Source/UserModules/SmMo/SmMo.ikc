@@ -13,18 +13,22 @@
 	/>
   </example>
 
-  <!--input 
-      name="POLAR_IN" 
-      description="Polar coordinates (angle, radious)" 
-      size="2"
-      /-->
+  <input 
+      name="ANG_IN_CUR" 
+      description="Position of arm (a1, a2, a3, a4)" 
+      size="4"
+      />
   
   <input 
       name="CART_IN" 
       description="Cartesian coordinates (x, y)" 
       size="2"
       />
-  
+  <output 
+      name="CART_OUT" 
+      description="Cartesian coordinates (x, y)" 
+      size="2"
+      />
   <output 
       name="SERVO_OUT" 
       description="Angles for the servos (degrees)" 
@@ -34,6 +38,7 @@
   <parameter name="ABCX" type="float" default="0.5f" min="0" max="1.0" description="Arm base coordinate (x)." />
   <parameter name="ABCY" type="float" default="1.f" min="0" max="1.0" description="Arm base coordinate (y)." />
   <parameter name="smooth" type="bool" default="no" description="Makes the movement smooth" />
+  <parameter name="segment_length" type="float" default="25.f" min="0.2f" max="1000.f" description="Length of move segment in mm." />
 
   <module class="SmMo" />
 

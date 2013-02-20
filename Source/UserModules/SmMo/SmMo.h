@@ -9,7 +9,9 @@ class SmMo: public Module
   static Module * Create(Parameter * p) { return new SmMo(p); }
 
   float * cart_in;
+  float * cart_out;
   float * servo_out;
+  float * cupoa;
   float y1;
   float y2;
   float k;
@@ -18,6 +20,7 @@ class SmMo: public Module
   float h;
   float abcx;
   float abcy;
+  float ml;
   bool smooth;  
 
   SmMo(Parameter * p) : Module(p) {}
