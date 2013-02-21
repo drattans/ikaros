@@ -8,11 +8,10 @@ typedef vector<VecDoub> MatDoub;
 struct Base_interp{
 
   int n, mm, jsav, cor, dj;
-  const double *xx, *yy;
-  
+  const double *xx, *yy;  
 Base_interp(VecDoub &x, const double *y, int m)
 : n(x.size()), mm(n), jsav(0), cor(0), xx(&x[0]), yy(y){
-  dj = MIN(1, (int)pow((double)n, 0.25));
+  dj = min(1, (int)pow((double)n, 0.25));
 }
 
   double interp(double x){
@@ -45,7 +44,7 @@ int Base_interp::locate(const double x){
   }
   cor = abs(jl-jsav) > dj ? 0 : 1;
   jsav = jl;
-  return MAX(0,MIN(n-mm,jl-((mm-2)>>1)));
+  return max(0,min(n-mm,jl-((mm-2)>>1)));
 }
 
 int Base_interp::hunt(const double x){
@@ -104,7 +103,7 @@ int Base_interp::hunt(const double x){
   }
   cor = abs(jl-jsav) > dj ? 0: 1;
   jsav = jl;
-  return MAX(0,MIN(n-mm,jl-((mm-2)>>1)));
+  return max(0,min(n-mm,jl-((mm-2)>>1)));
 }
 
 struct Spline_interp : Base_interp{
@@ -122,39 +121,39 @@ struct Spline_interp : Base_interp{
   
   void sety2(const double *xv, const double *yv, double yp1, double ypn);
   double rawinterp(int jl, double xv);
-}
+};
   
-  void Spline_interp::sety2(const double *xv, const double *yv, double yp1, double ypn){
-    int i, k;
-    double p, qn, sig, un;
-    int n = y2.size();
-    VecDoub u(n-1);
-    if(yp1 > 0.99e99){
-      y2[0]=u[0]=0.0;
-    }
-    else{
-      y2[0] = -0.5;
-      u[0]=(3.0/(xv[1]-xv[0]))*((yv[1]-yv[0])/(xv[1]-xv[0])-yp1);
-    }
-    for(i=1; i<n-1; ++i){
-      sig = (xv[i]-xv[i-1])/(xv[i+1]-xv[i-1]);
-      p=sig*y2[i-1]+2.0;
-      y2[i]=(sig-1.0)/p;
-      u[i]=(yv[i+1]-yv[i])/(xv[i+1]-xv[i]) - (yv[i]-yv[i-1])/(xv[i]-xv[i-1]);
-      u[i]=(6.0*u[i]/(xv[i+1]-xv[i-1])-sig*u[i-1])/p
-    }
-    if(ypn > 0.99e99){
-      qn=un=0.0;
-    }
-    else{
-      qn=0.5;
-      un=(3.0/(xv[n-1]-xv[n-2]))*(ypn-(yv[n-1]-yv[n-2])/(xv[n-1]-xv[n-2]));
-    }
-    y2[n-1]=(un-qn*u[n-2])/(qn*y2[n-2]+1.0);
-    for(k=n-2; k>=0; k--;){
-      y2[k]=y2[k]*y2[k+1]+u[k];
-    }
+void Spline_interp::sety2(const double *xv, const double *yv, double yp1, double ypn){
+  int i, k;
+  double p, qn, sig, un;
+  int n = y2.size();
+  VecDoub u(n-1);
+  if(yp1 > 0.99e99){
+    y2[0]=u[0]=0.0;
   }
+  else{
+    y2[0] = -0.5;
+    u[0]=(3.0/(xv[1]-xv[0]))*((yv[1]-yv[0])/(xv[1]-xv[0])-yp1);
+  }
+  for(i=1; i<n-1; ++i){
+    sig = (xv[i]-xv[i-1])/(xv[i+1]-xv[i-1]);
+    p=sig*y2[i-1]+2.0;
+    y2[i]=(sig-1.0)/p;
+    u[i]=(yv[i+1]-yv[i])/(xv[i+1]-xv[i]) - (yv[i]-yv[i-1])/(xv[i]-xv[i-1]);
+    u[i]=(6.0*u[i]/(xv[i+1]-xv[i-1])-sig*u[i-1])/p;
+  }
+  if(ypn > 0.99e99){
+    qn=un=0.0;
+  }
+  else{
+    qn=0.5;
+    un=(3.0/(xv[n-1]-xv[n-2]))*(ypn-(yv[n-1]-yv[n-2])/(xv[n-1]-xv[n-2]));
+  }
+  y2[n-1]=(un-qn*u[n-2])/(qn*y2[n-2]+1.0);
+  for(k=n-2; k>=0; k--){
+    y2[k]=y2[k]*y2[k+1]+u[k];
+  }
+}
 
 double Spline_interp::rawinterp(int jl, double x){
   int klo=jl, khi=jl+1;
@@ -169,7 +168,7 @@ double Spline_interp::rawinterp(int jl, double x){
   return y;
 }
 /*
-struct Spline2D_interp{
+  struct Spline2D_interp{
   int m,n;
   const MatDoub &y;
   const VecDoub &x1;
@@ -178,24 +177,24 @@ struct Spline2D_interp{
 
   Spline2D_interp(VecDoub &x1v, VecDoub &x2v, MatDoub &ym)
   : m(x1v.size()), n(x2v.size()), y(ym), yv(m), x1(x1v), srp(m){
-    for(int i=0; i<m; i++){
-      srp[i] = new Spline_interp(x2v, &y[i][0]);
-    }
+  for(int i=0; i<m; i++){
+  srp[i] = new Spline_interp(x2v, &y[i][0]);
+  }
   }
 
   ~Spline2D_interp(){
-    for(int i=0; i<m; i++){
-      delete srp[i];
-    }
+  for(int i=0; i<m; i++){
+  delete srp[i];
+  }
   }
 
   double interp(double x1p, double x2p){
-    for(int i=0; i<m; i++){
-      yv[i] = (*srp[i]).interp(x2p);
-    }
-    Spline_interp scol(x1, yv);
-    return scol.interp(x1p);
+  for(int i=0; i<m; i++){
+  yv[i] = (*srp[i]).interp(x2p);
+  }
+  Spline_interp scol(x1, yv);
+  return scol.interp(x1p);
   }
 
-};
+  };
 */

@@ -12,15 +12,9 @@
 	/>
   </example>
 
-  <!--input 
-      name="INPUT" 
-      description="Finger-to-object angle, finger-push angle, object-movement angle" 
-      size="3"
-      /-->
-
   <input 
-      name="FIPO" 
-      description="Position of fingertip (x,y)"
+      name="TAPO" 
+      description="Target position (x,y)"
       size="2"
       />
 
@@ -28,6 +22,17 @@
       name="PUPO" 
       description="Position of pushable center (x,y)"
       size="2"
+      />
+
+  <input 
+      name="PIN" 
+      description="Position of finger (a1, a2, a3, a4)"
+      size="4"
+      />
+
+  <output 
+      name="EL" 
+      description="Elevation of finger"
       />
 
   <output 

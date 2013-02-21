@@ -3,7 +3,7 @@
 
 #include "IKAROS.h"
 #include <vector> 
-#include "interp.h"
+//#include "interp_h.h"
 
 using namespace std;
 
@@ -12,20 +12,23 @@ class BicSpli: public Module
  public:
   static Module * Create(Parameter * p) { return new BicSpli(p); }
 
-  float * fipo;
+  float * tapo;
   float * pupo;
+  float * pin;
   float * npo;
-
+  float el;
   float pi;
 
-  //int n = 360;
-  vector<double> xx(0), yy(0);//(n)
+  vector<double> xx;
+  vector<double> yy;
 
  BicSpli(Parameter * p) : Module(p) {}
   virtual ~BicSpli() {}
 
-  void 		Init();
-  void 		Tick();
+  void Init();
+  void Tick();
+  void Manage(float fb[]);
+  void ATC(float *aip);
 };
 
 #endif
