@@ -24,11 +24,18 @@
       description="Cartesian coordinates (x, y)" 
       size="2"
       />
+
+  <input 
+      name="EL" 
+      description="Elevation of finger"
+      />
+
   <output 
       name="CART_OUT" 
       description="Cartesian coordinates (x, y)" 
       size="2"
       />
+
   <output 
       name="SERVO_OUT" 
       description="Angles for the servos (degrees)" 
