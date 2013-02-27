@@ -16,14 +16,29 @@ class BicSpli: public Module
   float * pupo;
   float * pin;
   float * npo;
-  float el;
+  float * npoo;
+  float * pupoo;
+  float * fb;//Feedback
+  float * fipo;//Position of finger (x,y)
+  float * el;
+  float radious;
+  float pl;
+  float te;
+  float na;
+  float h;
+  float abcx;
+  float abcy;
   float pi;
+
+  bool pmode;//Push mode
+  bool pdone;//Push done
+  bool firstM;
 
   vector<double> xx;
   vector<double> yy;
 
  BicSpli(Parameter * p) : Module(p) {}
-  virtual ~BicSpli() {}
+  virtual ~BicSpli();
 
   void Init();
   void Tick();

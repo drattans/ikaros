@@ -33,6 +33,7 @@
   <output 
       name="EL" 
       description="Elevation of finger"
+      size="1"
       />
 
   <output 
@@ -46,6 +47,9 @@
       description="Finger-to-object angle, finger-push angle, object-movement angle" 
       size="2"
       /-->
+
+  <parameter name="ABCX" type="float" default="0.5f" min="0" max="1.0" description="Arm base coordinate (x)." />
+  <parameter name="ABCY" type="float" default="1.f" min="0" max="1.0" description="Arm base coordinate (y)." />
 
   <module class="BicSpli" />
 
