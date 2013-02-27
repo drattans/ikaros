@@ -12,7 +12,7 @@ class SmMo: public Module
   float * cart_out;
   float * servo_out;
   float * cupoa;
-  float el;
+  float * el;
   float y1;
   float y2;
   float k;

@@ -14,12 +14,12 @@ SmMo::Init()
   abcx = GetFloatValue("ABCX", 0.5f);//Arm base coordinate (x)
   abcy = GetFloatValue("ABCY", 1.f);//Arm base coordinate (y)
   ml = GetFloatValue("segment_length", 25.f);//Move length
-  el = GetFloatValue("EL");//Elevation of finger
+  el = GetInputArray("EL");//Elevation of finger
   smooth = GetBoolValue("smooth", false);
   y1 = 126.f; //Arm length (mm)
   y2 = 112.f; //Forearm length (mm)
-  k = -6.f+el;//Arm base from table (mm)
-  fe = 0.f;//Extention of finger (mm)
+  k = 5.f+el[0];//Arm base from table (mm)
+  fe = 54.f;//Extention of finger (mm)
   h = 525.f;//Camera hight from surface (mm)
   pi = atan(1.f)*4.f;//Pi
 }
@@ -32,6 +32,7 @@ SmMo::Tick()
   /***
    * Cartesian to polar to servo
    ***/
+  //printf("El: %f\n", el[0]);
   if(cart_in[0] <= 1 && cart_in[0] >= 0 && cart_in[1] <= 1 && cart_in[1] >= 0){
     icc[0] = (cart_in[0]-abcx)*2*h*tan(28.5*pi/180);
     icc[1] = (abcy-cart_in[1])*2*h*tan(21.5*pi/180);

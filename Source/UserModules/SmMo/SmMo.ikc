@@ -28,6 +28,7 @@
   <input 
       name="EL" 
       description="Elevation of finger"
+      size="1"
       />
 
   <output 
