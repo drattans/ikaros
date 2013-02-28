@@ -9,13 +9,13 @@ MoCoT::Init()
   //polar_in = GetInputArray("POLAR_IN");//(angle,radious)
   cart_in = GetInputArray("CART_IN");//(x,y)
   servo_out = GetOutputArray("SERVO_OUT");
-  abcx = GetFloatValue("ABCX", 0.33f);//Arm base coordinate (x)
-  abcy = GetFloatValue("ABCY", 0.78f);//Arm base coordinate (y)
-  y1 = 125.f; //Arm length (mm)
+  abcx = GetFloatValue("ABCX", 0.5f);//Arm base coordinate (x)
+  abcy = GetFloatValue("ABCY", 1.f);//Arm base coordinate (y)
+  y1 = 128.f; //Arm length (mm)
   y2 = 112.f; //Forearm length (mm)
   k = -7.f;//Arm base from table (mm)
-  fe = 30.f;//Extention of finger (mm)
-  h = 510.f;//Camera hight from surface (mm)
+  fe = 0.f;//Extention of finger (mm)
+  h = 525.f;//Camera hight from surface (mm)
   pi = atan(1.f)*4.f;//Pi
 }
 
@@ -32,7 +32,7 @@ MoCoT::Tick()
     icc[1] = (abcy-cart_in[1])*2*h*tan(21.5*pi/180);
     icp[0] = atan2(icc[1],icc[0]) * 180.f/pi - 90;
     icp[1] = sqrt(pow(icc[0],2)+pow(icc[1],2))-fe;
-    if(icp[0] < 90 && icp[0] > -90 && icp[1] < 230 && icp[1] > 90){
+    if(icp[0] < 90 && icp[0] > -90 && icp[1] < 240 && icp[1] > 90){
       float x1 = pi/2 + asin(k/icp[1]) - acos((pow(y1,2) + pow(icp[1],2) + pow(k,2) - pow(y2,2))/(2*sqrt(pow(icp[1],2)+pow(k,2))*y1));
       float x2 = pi - acos((pow(y1,2) + pow(y2,2) - pow(icp[1],2) - pow(k,2))/(2*y1*y2));;
       servo_out[0] = 180.f + icp[0];//Shoulder (angle)
