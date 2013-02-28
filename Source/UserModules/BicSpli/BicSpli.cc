@@ -41,11 +41,6 @@ BicSpli::Tick()
   tapo[1] = abcy - tapo[1];
   pupo[0] = pupo[0] - abcx;
   pupo[1] = abcy - pupo[1];
-  //float pupoo [2];//Old position of pushable center (x,y)
-  //float radious = 25.f;//Good if it could find this by itself, but can be put to >21 for the time being
-  //float pl = 15.f;//Push length
-  //float te = 10.f;//Tolerated error
-  //float na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;//New angle, initiated as a random float from -pi to pi
   float tpa;//Target-pushable angle
   float tpd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));//Target-pushable distance
   if(tpd == 0){//If tapo == pupo -> pushable at target //tpd < ml/2?
@@ -151,16 +146,16 @@ BicSpli::Manage(float fb[])
     printf("Managed, in loop, %i!\n", xx.size());
     xx.push_back(fb[0]);
     yy.push_back(fb[1]);
+    xx.push_back((fb[0]+1.f));//DETTA ÄR JÄTTEFEL!!! MÅSTE ÄNDRAS!!!
+    yy.push_back((fb[1]+1.f));//DETTA ÄR JÄTTEFEL!!! MÅSTE ÄNDRAS!!!
     firstM=false;
   }
-  printf("Managed, outside loop, %i!\n", xx.size());
-  //Spline_interp pushEffectManage(xx,yy);
+  printf("Managed, outside loop, %f!\n", xx[(xx.size()-1)]);
+  printf("Managed, outside loop, %f!\n", yy[(yy.size()-1)]);
   Spline_interp *pushEffectManage = new Spline_interp(xx,yy);
-  //Spline_interp* pushEffectManage;
-  //pushEffectManage = new Spline_interp(xx,yy);
   printf("Managed 2!\n");
   nat = pushEffectManage->interp(fb[0]);
-  printf("Managed 3!\n");
+  printf("Managed 3! Nat: %f\n", nat);
   if(abs(nat-fb[1])>te){
     int t=0;
     //if(xx.size()>0){

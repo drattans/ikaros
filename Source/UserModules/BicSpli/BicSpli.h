@@ -7,6 +7,8 @@
 
 using namespace std;
 
+typedef vector<double> VecDoub;
+
 class BicSpli: public Module
 {
  public:
@@ -34,8 +36,8 @@ class BicSpli: public Module
   bool pdone;//Push done
   bool firstM;
 
-  vector<double> xx;
-  vector<double> yy;
+  VecDoub xx;
+  VecDoub yy;
 
  BicSpli(Parameter * p) : Module(p) {}
   virtual ~BicSpli();

@@ -112,6 +112,7 @@ struct Spline_interp : Base_interp{
  Spline_interp(VecDoub &xv, VecDoub &yv, double yp1=1.e99, double ypn=1.e99)
    : Base_interp(xv, &yv[0], 2), y2(xv.size()){
     sety2(&xv[0], &yv[0], yp1, ypn);
+
   }
   
  Spline_interp(VecDoub &xv, const double *yv, double yp1=1.e99, double ypn=1.e99)
