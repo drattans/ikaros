@@ -18,7 +18,7 @@ SmMo::Init()
   smooth = GetBoolValue("smooth", false);
   y1 = 126.f; //Arm length (mm)
   y2 = 112.f; //Forearm length (mm)
-  k = 5.f+el[0];//Arm base from table (mm)
+  k = 10.f+el[0];//Arm base from table (mm)
   fe = 54.f;//Extention of finger (mm)
   h = 525.f;//Camera hight from surface (mm)
   pi = atan(1.f)*4.f;//Pi
@@ -27,6 +27,7 @@ SmMo::Init()
 void
 SmMo::Tick()
 {
+  k = 10.f+el[0];
   float icc [2];// = {.0f,0.f};//Internal coordinates cartesian
   float icp [2];// = {.0f,0.f};//Internal coordinates polar
   /***
