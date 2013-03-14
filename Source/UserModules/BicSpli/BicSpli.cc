@@ -1,7 +1,10 @@
 #include "BicSpli.h"
 #include "interp_h.h"
 #include "math.h"
+#include <iostream>
+#include <fstream>
 
+using namespace std;
 using namespace ikaros;
 
 void
@@ -24,13 +27,16 @@ BicSpli::Init()
   pupoo = new float[2];
   pmode = false;//Push mode
   pdone = false;//Push done
+  initi = false;//Push initialised
   firstM = true;
   fipo = new float[2];
   fb = new float[2];
+  tg = new float[2];//Temporary goal
   radious = 25.f;//Good if it could find this by itself, but can be put to >21 for the time being
   pl = 15.f;//Push length
-  te = 10.f;//Tolerated error
+  te = 5.f;//Tolerated error
   na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;//New angle, initiated as a random float from -pi to pi
+  printf("NA!!!!!: %f\n", na);
 }
 
 void
@@ -58,16 +64,26 @@ BicSpli::Tick()
   else if(tpd == 0){
     printf("Error (tpd): %f\n", tpd);
   }
-  else{//The interessting part
+
+
+  /***
+   * The interessting part
+   ***/
+  else{
     printf("Tpa: %f\n", tpa);
     ATC(pin);
     fipo[0] = pin[0];
     fipo[1] = pin[2];
     //printf("Finger position x: %f, finger position y: %f\n", fipo[0], fipo[1]);
+
+    /***
+     * Evaluation
+     ***/
     if(pdone==true){
       printf("\n3\n\n");
       pdone = false;
       float fbd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));
+      //float fbd = sqrt(pow((pupo[0]-pupoo[0]), 2) + pow((pupo[1]-pupoo[1]),2));
       if(fbd == 0){
 	printf("Did not move (tpd): %f\n", fbd);
       }
@@ -77,39 +93,60 @@ BicSpli::Tick()
       else{
 	fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd)+pi;
       }
-      fb[1] = na;//attack angle
+      fb[1] = na;//Attack angle
       printf("Effect angle: %F, Attack angle: %f\n", fb[0], fb[1]);
       Manage(fb);
-      Spline_interp *pushEffect = new Spline_interp(xx,yy);
-      na = pushEffect->interp(tpa);
+      if(xx.size()>1){
+	Spline_interp *pushEffect = new Spline_interp(xx,yy);
+	na = pushEffect->interp(tpa);
+	if(na<-pi || na>pi){
+	  na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
+	}
+	printf("NA!!!!1!: %f\n", na);
+      }
+      else{
+	na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
+	printf("NA!!!!!: %f\n", na);
+      }
     }
+
+    /***
+     * Going to attack position
+     ***/
     if(abs(npoo[0]-fipo[0])>te || abs(npoo[1]-fipo[1])>te){
       pmode = false;
       printf("1\n");
       printf("1: old order x: %f, new position x: %f\n", npoo[0], fipo[0]);
       printf("1: old order y: %f, new position y: %f\n", npoo[1], fipo[1]);
-      float ar1 = abs(npoo[0]-fipo[0]);
-      float ar2 = abs(npoo[1]-fipo[1]);
+      float ar1 = abs(npoo[0]-fipo[0]);//Distance to x
+      float ar2 = abs(npoo[1]-fipo[1]);//Distance to y
       printf("1: Difference x: %f, Difference y: %f, Tolerated error: %f\n", ar1, ar2, te);
       //pdone = false;//Unnecessary at the moment
-      float f1 = ((radious*cos(na))/(2.f*h*tan(28.5*pi/180.f)));
-      float f2 = ((radious*sin(na))/(2.f*h*tan(21.5*pi/180.f)));
-      npo[0] = pupo[0] - f1 + abcx;
-      npo[1] = abcy - pupo[1] + f2;
+      float f1 = ((radious*cos(na))/(2.f*h*tan(28.5*pi/180.f)));//Attack position, origo in pushable
+      float f2 = ((radious*sin(na))/(2.f*h*tan(21.5*pi/180.f)));//Attack position, origo in pushable
+      npo[0] = pupo[0] - f1 + abcx;//Attack position
+      npo[1] = abcy - pupo[1] + f2;//Attack position
       npoo[0] = (npo[0] - abcx)*(2.f*h*tan(28.5*pi/180.f));
       npoo[1] = (abcy - npo[1])*(2.f*h*tan(21.5*pi/180.f));
-      printf("1: old order x: %f, old order y: %f\n", npoo[0], npoo[1]);
+      printf("1: old order x: %f, old order y: %f\n", npo[0], npo[1]);
+      printf("1: oold order x: %f, oold order y: %f\n", npoo[0], npoo[1]);
       //printf("Pos 1 finger position x: %f, Pos 1 finger position y: %f\n", pupo[0], pupo[1]);
       //printf("Cor 1 finger position x: %f, Cor 1 finger position y: %f\n", f1, f2);
       //printf("Out 1 finger position x: %f, Out 1 finger position y: %f\n", npo[0], npo[1]);
     }
-    else{
+
+    /***
+     * Pushing
+     ***/
+    else if(initi==false){
       pmode = true;
       printf("2\n");
-      float f1 = (((radious-pl)*cos(na))/(2*h*tan(28.5*pi/180)));
-      float f2 = (((radious-pl)*sin(na))/(2*h*tan(21.5*pi/180)));
-      npo[0] = pupo[0] - f1 + abcx;
-      npo[1] = abcy - pupo[1] - f2;
+      float f1 = (((radious-pl)*cos(na))/(2*h*tan(28.5*pi/180)));//Finger target, origo in pushable
+      float f2 = (((radious-pl)*sin(na))/(2*h*tan(21.5*pi/180)));//Finger target, origo in pushable
+      tg[0] = pupo[0] - f1 + abcx;//Finger target
+      tg[1] = abcy - pupo[1] - f2;//Finger target
+      npo[0] = tg[0];
+      npo[1] = tg[1];
       npoo[0] = (npo[0] - abcx)/(2*h*tan(28.5*pi/180));
       npoo[1] = (abcy - npo[1])/(2*h*tan(21.5*pi/180));
       printf("2: old order x: %f, old order y: %f\n", npoo[0], npoo[1]);
@@ -119,17 +156,28 @@ BicSpli::Tick()
       //printf("Out 2 finger position x: %f, Out 2 finger position y: %f\n", npo[0], npo[1]);
       pupoo[0] = pupo[0];
       pupoo[1] = pupo[1];
+      initi=true;
+    }
+    else if(abs(npoo[0]-fipo[0])>te || abs(npoo[1]-fipo[1])>te){
+      npo[0] = tg[0];
+      npo[1] = tg[1];
+      npoo[0] = (npo[0] - abcx)/(2*h*tan(28.5*pi/180));
+      npoo[1] = (abcy - npo[1])/(2*h*tan(21.5*pi/180));
+    }
+    else{
+      initi=false;
       pdone = true;
     }
+
     if(pmode == true){
       el[0] = 0.f;
       //printf("3\n");
     }
     else{
       //printf("4\n");
-      el[0] = -40.f;
+      el[0] = 0.f;//-40.f
     }
-    //printf("El: %f\n", el[0]);
+    printf("El: %f\n", el[0]);
   }
 }
 
@@ -142,33 +190,69 @@ BicSpli::Manage(float fb[])
   /***
    * Add new data point?
    ***/
-  if(firstM == true){
-    printf("Managed, in loop, %i!\n", xx.size());
+  if(xx.size()>1){
+    printf("Managed, outside loop, %f!\n", xx[(xx.size()-1)]);
+    printf("Managed, outside loop, %f!\n", yy[(yy.size()-1)]);
+    Spline_interp *pushEffectManage = new Spline_interp(xx,yy);
+    printf("Managed 2!\n");
+    nat = pushEffectManage->interp(fb[0]);
+    printf("Managed 3! Nat: %f\n", nat);
+    if(abs(nat-fb[1])>te){
+      int t=0;
+      //if(xx.size()>0){
+      for(int i=0; i<xx.size(); ++i){
+	if(fb[0]<xx[i]){
+	  t=i;
+	  break;
+	}
+      }
+      printf("Managed 4!\n");
+      //}
+      if(fb[1]>pi || fb[1]<-pi){
+	printf("YY: %f, time: %i\n", fb[1], xx.size());
+      }
+      //xx.insert(t, fb[0]);
+      //yy.insert(t, fb[1]);
+      xx.insert(xx.begin()+t, fb[0]);
+      yy.insert(yy.begin()+t, fb[1]);
+    }
+    delete pushEffectManage;
+  }
+  else if(xx.size()<1){
+    //if(firstM == true){
+    //printf("Managed, in loop, %i!\n", xx.size());
     xx.push_back(fb[0]);
     yy.push_back(fb[1]);
-    xx.push_back((fb[0]+1.f));//DETTA ÄR JÄTTEFEL!!! MÅSTE ÄNDRAS!!!
-    yy.push_back((fb[1]+1.f));//DETTA ÄR JÄTTEFEL!!! MÅSTE ÄNDRAS!!!
-    firstM=false;
+    //firstM=false;
   }
-  printf("Managed, outside loop, %f!\n", xx[(xx.size()-1)]);
-  printf("Managed, outside loop, %f!\n", yy[(yy.size()-1)]);
-  Spline_interp *pushEffectManage = new Spline_interp(xx,yy);
-  printf("Managed 2!\n");
-  nat = pushEffectManage->interp(fb[0]);
-  printf("Managed 3! Nat: %f\n", nat);
-  if(abs(nat-fb[1])>te){
-    int t=0;
-    //if(xx.size()>0){
-    for(int i=0; i<xx.size(); ++i){
-      if(fb[0]<xx[i]){
-	t=i;
-	break;
-      }
+  else{
+    if(fb[0]<xx[0]){
+      //xx.insert(0, fb[0]);
+      //yy.insert(0, fb[1]);
+      xx.insert(xx.begin(), fb[0]);
+      yy.insert(yy.begin(), fb[1]);
+      //printf("Managed, in loop, %i!\n", xx.size());
     }
-    printf("Managed 4!\n");
-    //}
-    xx.insert(xx.begin()+t, fb[0]);
-    yy.insert(yy.begin()+t, fb[1]);
+    else{
+      xx.push_back(fb[0]);
+      yy.push_back(fb[1]);
+    }    
+  }
+  if(xx.size()==8){
+    ofstream rdp;
+    rdp.open ("measured.txt");
+    for(int fl=0; fl<xx.size(); ++fl){
+      rdp << xx[fl] << " " << yy[fl] << "\n";
+    }
+    rdp.close();
+    Spline_interp *pushEffectManage = new Spline_interp(xx,yy);
+    ofstream gtp;
+    gtp.open ("generated.txt");
+    for(float fl=-pi; fl<pi; fl+=0.1){
+      gtp << fl << " " << pushEffectManage->interp(fl) << "\n";
+    }
+    delete pushEffectManage;
+    gtp.close();
   }
   printf("Knowledge: %i\n----------------------------------------------------------------\n", xx.size());
   /*
@@ -178,7 +262,6 @@ BicSpli::Manage(float fb[])
     yy.erase(oi);
     }
   */
-  delete pushEffectManage;
 }
 
 void

@@ -22,6 +22,7 @@ class BicSpli: public Module
   float * pupoo;
   float * fb;//Feedback
   float * fipo;//Position of finger (x,y)
+  float * tg;
   float * el;
   float radious;
   float pl;
@@ -34,6 +35,7 @@ class BicSpli: public Module
 
   bool pmode;//Push mode
   bool pdone;//Push done
+  bool initi;//Push initialised
   bool firstM;
 
   VecDoub xx;

@@ -161,6 +161,7 @@ double Spline_interp::rawinterp(int jl, double x){
   double y, h, b, a;
   h=xx[khi]-xx[klo];
   if(h==0.0){
+    printf("This is a problem...\n");
     throw("Bad input to routine splint");
   }
   a = (xx[khi]-x)/h;
