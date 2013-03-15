@@ -213,19 +213,40 @@ BicSpli::Manage(float fb[])
       }
       //xx.insert(t, fb[0]);
       //yy.insert(t, fb[1]);
-      xx.insert(xx.begin()+t, fb[0]);
-      yy.insert(yy.begin()+t, fb[1]);
+      else if(fb[0]!=xx[t]){
+	xx.insert(xx.begin()+t, fb[0]);
+	yy.insert(yy.begin()+t, fb[1]);
+      }
+      if(temPo.size()>0 && xx.size()>1){//Remove the random points (used for initiation)
+	int tt=0;
+	for(int i=0; i<xx.size(); ++i){
+	  if(temPo.front()==xx[i]){
+	    tt=i;
+	    break;
+	  }
+	}
+	xx.erase(xx.begin()+tt);
+	yy.erase(yy.begin()+tt);
+	if(temPo.front()==fb[0]){
+	  xx.insert(xx.begin()+t, fb[0]);
+	  yy.insert(yy.begin()+t, fb[1]);
+	}
+	temPo.erase(temPo.begin());
+	printf("Number of random points: %i\n", temPo.size());
+      }
     }
     delete pushEffectManage;
   }
   else if(xx.size()<1){
     //if(firstM == true){
     //printf("Managed, in loop, %i!\n", xx.size());
+    temPo.push_back(fb[0]);
     xx.push_back(fb[0]);
     yy.push_back(fb[1]);
     //firstM=false;
   }
-  else{
+  else if(fb[0]!=xx[0]){
+    temPo.push_back(fb[0]);
     if(fb[0]<xx[0]){
       //xx.insert(0, fb[0]);
       //yy.insert(0, fb[1]);
@@ -238,7 +259,7 @@ BicSpli::Manage(float fb[])
       yy.push_back(fb[1]);
     }    
   }
-  if(xx.size()==8){
+  if(xx.size()>3){
     ofstream rdp;
     rdp.open ("measured.txt");
     for(int fl=0; fl<xx.size(); ++fl){

@@ -40,6 +40,7 @@ class BicSpli: public Module
 
   VecDoub xx;
   VecDoub yy;
+  VecDoub temPo;
 
  BicSpli(Parameter * p) : Module(p) {}
   virtual ~BicSpli();
