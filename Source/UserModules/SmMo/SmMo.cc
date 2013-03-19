@@ -13,7 +13,7 @@ SmMo::Init()
   cupoa = GetInputArray("ANG_IN_CUR");//(a1, a2, a3, a4)
   abcx = GetFloatValue("ABCX", 0.5f);//Arm base coordinate (x)
   abcy = GetFloatValue("ABCY", 1.f);//Arm base coordinate (y)
-  ml = GetFloatValue("segment_length", 25.f);//Move length
+  ml = GetFloatValue("segment_length", 10.f);//Move length
   el = GetInputArray("EL");//Elevation of finger
   smooth = GetBoolValue("smooth", false);
   y1 = 126.f; //Arm length (mm)
