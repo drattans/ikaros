@@ -33,6 +33,11 @@ class BicSpli: public Module
   float abcy;
   float pi;
 
+  int tlc;
+  int tlc2;
+  int tlcm;
+
+  bool just;
   bool pmode;//Push mode
   bool pdone;//Push done
   bool initi;//Push initialised
