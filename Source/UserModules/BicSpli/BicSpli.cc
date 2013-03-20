@@ -1,5 +1,5 @@
 #include "BicSpli.h"
-#include "interp_h.h"
+#include "interp.h"
 #include "math.h"
 #include <iostream>
 #include <fstream>
@@ -36,7 +36,7 @@ BicSpli::Init()
   radious = 30.f;//Good if it could find this by itself, but can be put to >21 for the time being
   pl = 35.f;//Push length
   te = 5.f;//Tolerated error
-  tlcm = 4;//Tic-lagg-counter max
+  tlcm = 5;//Tic-lagg-counter max
   tlc = tlcm;//Tic-lagg-counter
   tlc2 = tlcm;//Tic-lagg-counter
   na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;//New angle, initiated as a random float from -pi to pi
@@ -98,13 +98,13 @@ BicSpli::Tick()
 	  printf("Did not move (tpd): %f\n", fbd);
 	}
 	else if((pupoo[1]-pupo[1]) > 0){
-	  fb[0] = - acos((pupoo[0]-pupo[0])/fbd);
+	  fb[1] = - acos((pupoo[0]-pupo[0])/fbd);
 	}
 	else{
-	  fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd)+pi;
+	  fb[1] = - acos(-(pupoo[0]-pupo[0])/fbd)+pi;
 	}
-	fb[1] = na;//Attack angle
-	printf("Effect angle: %F, Attack angle: %f\n", fb[0], fb[1]);
+	fb[0] = na;//Attack angle
+	printf("Effect angle: %F, Attack angle: %f\n", fb[1], fb[0]);
 	Manage(fb);
 	if(xx.size()>1){
 	  Spline_interp *pushEffect = new Spline_interp(xx,yy);
@@ -220,7 +220,7 @@ void
 BicSpli::Manage(float fb[])
 {
   printf("Managed!\n");
-  float te = pi/18.f;//Tolerated error
+  float teM = pi/18.f;//Tolerated error
   float nat;//New angle test
   /***
    * Add new data point?
@@ -232,7 +232,7 @@ BicSpli::Manage(float fb[])
     printf("Managed 2!\n");
     nat = pushEffectManage->interp(fb[0]);
     printf("Managed 3! Nat: %f\n", nat);
-    if(abs(nat-fb[1])>te){
+    if(abs(nat-fb[1])>teM){
       int t=0;
       //if(xx.size()>0){
       for(int i=0; i<xx.size(); ++i){
@@ -326,7 +326,7 @@ BicSpli::ATC(float *aip)
   float y1 = 126.f; //Arm length (mm)
   float y2 = 112.f; //Forearm length (mm)
   float k = 5.f + el[0];//Arm base from table (mm)
-  float fe = 54.f;//Extention of finger (mm)
+  float fe = 44.f;//Extention of finger (mm)
   float tna [2];
   float iccp [2];
   tna[0] = (pin[0] - 180.f)*pi/180.f;
