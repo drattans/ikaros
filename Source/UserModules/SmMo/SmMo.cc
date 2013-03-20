@@ -19,7 +19,7 @@ SmMo::Init()
   y1 = 126.f; //Arm length (mm)
   y2 = 112.f; //Forearm length (mm)
   k = 10.f+el[0];//Arm base from table (mm)
-  fe = 54.f;//Extention of finger (mm)
+  fe = 44.f;//Extention of finger (mm)
   h = 525.f;//Camera hight from surface (mm)
   pi = atan(1.f)*4.f;//Pi
 }
