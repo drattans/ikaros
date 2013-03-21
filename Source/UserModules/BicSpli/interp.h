@@ -29,7 +29,7 @@ struct Spline_interp{
       }
     }
     if(t<0){
-      ret = k.at(0)*x;
+      ret = yyI.at(0) - k.at(0)*(xxI.at(0)-x);
     }
     else if(t==xxI.size()-1){
       ret = yyI.at(t) + k.at(t-1)*(x-xxI.at(t));
