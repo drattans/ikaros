@@ -60,11 +60,13 @@ BicSpli::Tick()
     printf("             ~*\\Done/*~             \n");
   }
   else if((pupo[1]-tapo[1]) > 0){
-    tpa = - acos(-(pupo[0]-tapo[0])/tpd);
+    tpa =  acos(-(pupo[0]-tapo[0])/tpd)-pi;
   }
   else{
-    tpa = - acos((pupo[0]-tapo[0])/tpd) + pi;
+    tpa =  acos((pupo[0]-tapo[0])/tpd);
   }
+  //tpa=-tpa;
+  printf("Tpa: %f\n", tpa);
   if(tpa<-pi || tpa>pi){
     printf("Error (tpa): %f\n", tpa);
   }
@@ -106,12 +108,13 @@ BicSpli::Tick()
 	  fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd) + pi;
 	}
 	fb[1] = na;//Attack angle
-	fb[0] = - fb[0];
+	//fb[0] = -fb[0];
 	//printf("Effect angle: %F, Attack angle: %f\n", fb[1], fb[0]);
 	Manage(fb);
 	if(xx.size()>1){
 	  Spline_interp *pushEffect = new Spline_interp(xx,yy);
 	  na = pushEffect->interp(tpa);
+	  printf("M: Na: %f, Tpa: %f\n", na, tpa);
 	  if(na<-pi || na>pi){
 	    na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
 	  }
@@ -159,7 +162,7 @@ BicSpli::Tick()
      * Pushing
      ***/
     else if(initi==false){
-      printf("2, tlc: %i\n", tlc2);
+      //printf("2, tlc: %i\n", tlc2);
       pmode = true;
       if(tlc2>0){
 	--tlc2;
@@ -174,6 +177,7 @@ BicSpli::Tick()
 	npo[1] = tg[1];
 	npoo[0] = (npo[0] - abcx)*(2*h*tan(28.5*pi/180));
 	npoo[1] = (abcy - npo[1])*(2*h*tan(21.5*pi/180));
+	printf("Na: %f, Tpa: %f\n", na, tpa);
 	//printf("2: new order x: %f, new order y: %f\n", npo[0], npo[1]);
 	//printf("2: old order x: %f, old order y: %f\n", npoo[0], npoo[1]);
 	//npo[0] = (pupo[0] + (radious-pl)*cos(na))/(2*h*tan(28.5*pi/180)) - abcx;
