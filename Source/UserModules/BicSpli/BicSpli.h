@@ -21,9 +21,12 @@ class BicSpli: public Module
   float * npoo;
   float * pupoo;
   float * fb;//Feedback
+  float * fbo;//Feedback old
   float * fipo;//Position of finger (x,y)
   float * tg;
   float * el;
+  float tpa;//Target-pushable angle
+  float tpao;//Target-pushable angle old
   float radious;
   float pl;
   float te;
@@ -46,6 +49,8 @@ class BicSpli: public Module
   VecDoub xx;
   VecDoub yy;
   VecDoub temPo;
+
+  vector<bool> ok;
 
  BicSpli(Parameter * p) : Module(p) {}
   virtual ~BicSpli();
