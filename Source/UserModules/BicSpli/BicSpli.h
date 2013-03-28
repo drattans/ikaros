@@ -43,6 +43,7 @@ class BicSpli: public Module
   bool just;
   bool pmode;//Push mode
   bool pdone;//Push done
+  bool ddone;//Finished recently?
   bool initi;//Push initialised
   bool firstM;
 
@@ -59,6 +60,8 @@ class BicSpli: public Module
   void Tick();
   void Manage(float fb[]);
   void ATC(float *aip);
+
+  int PosinX(float a);
 };
 
 #endif

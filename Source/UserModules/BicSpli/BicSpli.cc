@@ -30,6 +30,7 @@ BicSpli::Init()
   just = false;
   pmode = false;//Push mode
   pdone = false;//Push done
+  ddone = false;//Finished recently?
   initi = false;//Push initialised
   firstM = true;
   fipo = new float[2];
@@ -55,26 +56,44 @@ BicSpli::Tick()
   pupo[0] = pupo[0] - abcx;
   pupo[1] = abcy - pupo[1];
   float tpd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));//Target-pushable distance
-  if(tpd < 0.03f){//tpd == 0){//If tapo == pupo -> pushable at target //tpd < ml/2?
-    printf("Error (tpd): %f\n", tpd);
+  if(tpd < 0.03f){//If at goal
+    //printf("Error (tpd): %f\n", tpd);
     printf("             ~*\\Done/*~             \n");
-    tlc=tlcm;
-    tpao=tpa;
+    ddone = true;
+    //just = true;
+    //pmode = false;
     pdone = false;
-    float fbd = sqrt(pow((pupo[0]-pupoo[0]), 2) + pow((pupo[1]-pupoo[1]),2));
-    fbo[0] = fb[0];
-    fbo[1] = fb[1];
-    if(fbd == 0){
-      printf("Did not move (tpd): %f\n", fbd);
-    }
-    else if((pupoo[1]-pupo[1]) > 0){
-      fb[0] = - acos((pupoo[0]-pupo[0])/fbd);
-    }
-    else{
-      fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd) + pi;
-    }
-    fb[1] = na;//Attack angle
-    //Manage(fb);
+    el[0] = -40.f;
+    /* Only once, but not first time
+	tlc=tlcm;
+	tpao=tpa;
+	pdone = false;
+	//float fbd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));
+	float fbd = sqrt(pow((pupo[0]-pupoo[0]), 2) + pow((pupo[1]-pupoo[1]),2));
+	fbo[0] = fb[0];
+	fbo[1] = fb[1];
+	if(fbd == 0){
+	  printf("Did not move (tpd): %f\n", fbd);
+	}
+	else if((pupoo[1]-pupo[1]) > 0){
+	  fb[0] = - acos((pupoo[0]-pupo[0])/fbd);
+	}
+	else{
+	  fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd) + pi;
+	}
+	fb[1] = na;//Attack angle
+	//fb[0] = -fb[0];
+	if(abs(tpao-fb[0])>pi/10.f){
+	  int ttt=PosinX(tpao);
+	  if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
+	    printf("Helped\n");
+	  }
+	  else{
+	    ok.at(ttt)=false;
+	  }
+	}
+	Manage(fb);
+	*/
   }
   else if((pupo[1]-tapo[1]) > 0){
     tpa =  acos(-(pupo[0]-tapo[0])/tpd)-pi;
@@ -99,6 +118,29 @@ BicSpli::Tick()
     ATC(pin);
     fipo[0] = pin[0];
     fipo[1] = pin[2];
+
+    /*
+    if(ddone==true){
+    *//*
+    	int t=PosinX(tpa);
+	if(ok.at(t) && xx.size()>1){
+	  printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	  Spline_interp *pushEffect = new Spline_interp(xx,yy);
+	  na = pushEffect->interp(tpa);
+	  //printf("M: Na: %f, Tpa: %f\n", na, tpa);
+	  if(na<-pi || na>pi){
+	    na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
+	  }
+	  just=true;
+	}
+	else{
+	  printf("Rand!++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	  na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
+	  just=true;
+	}
+    *//*
+    }
+    */
 
     /***
      * Evaluation
@@ -127,23 +169,16 @@ BicSpli::Tick()
 	fb[1] = na;//Attack angle
 	//fb[0] = -fb[0];
 	if(abs(tpao-fb[0])>pi/10.f){
-	  int ttt=xx.size();
-	  for(int i=0; i<xx.size(); ++i){
-	    if(tpao<xx[i]){
-	      ttt=i;
-	      break;
-	    }
+	  int ttt=PosinX(tpao);
+	  if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
+	    printf("Helped\n");
 	  }
-	  ok.at(ttt)=false;
+	  else{
+	    ok.at(ttt)=false;
+	  }
 	}
 	Manage(fb);
-	int t=xx.size();
-	for(int i=0; i<xx.size(); ++i){
-	  if(tpa<xx[i]){
-	    t=i;
-	    break;
-	  }
-	}
+	int t=PosinX(tpa);
 	if(ok.at(t) && xx.size()>1){
 	  printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	  Spline_interp *pushEffect = new Spline_interp(xx,yy);
@@ -209,8 +244,9 @@ BicSpli::Tick()
       npoo[1] = (abcy - npo[1])*(2*h*tan(21.5*pi/180));
     }
     else{
-      initi=false;
+      initi = false;
       pdone = true;
+      ddone = false;
     }
 
     if(pmode == true){
@@ -240,14 +276,8 @@ BicSpli::Manage(float fb[])
   if(xx.size()>1){
     Spline_interp *pushEffectManage = new Spline_interp(xx,yy);
     nat = pushEffectManage->interp(fb[0]);
-    if(abs(nat-fb[1])>teM){
-      int t=xx.size();
-      for(int i=0; i<xx.size(); ++i){
-	if(fb[0]<xx[i]){
-	  t=i;
-	  break;
-	}
-      }
+    if(abs(nat-fb[1])>teM || ok.at(PosinX(fb[0]))==false){//Prediction wrong, time to learn
+      int t=PosinX(fb[0]);
       if(fb[1]>pi || fb[1]<-pi){
 	//printf("YY: %f, time: %i\n", fb[1], xx.size());
       }
@@ -330,13 +360,7 @@ BicSpli::Manage(float fb[])
       kel.open ("generatedF.txt");
       for(float fl=-pi; fl<pi; fl+=0.1){
 	gtp << fl << " " << pushEffectManage->interp(fl) << "\n";
-	int ttt=xx.size();
-	for(int i=0; i<xx.size(); ++i){
-	  if(fl<xx[i]){
-	    ttt=i;
-	    break;
-	  }
-	}
+	int ttt=PosinX(fl);
 	if(!ok.at(ttt)){
 	  kel << fl << " " << pushEffectManage->interp(fl) << "\n";
 	}
@@ -374,7 +398,18 @@ BicSpli::ATC(float *aip)
   aip[2] = iccp[1]*sin(iccp[0]);///(2*h*tan(21.5*pi/180)); abcy - 
 }
 
-//void
+int
+BicSpli::PosinX(float a){
+  int t=xx.size();
+  for(int i=0; i<xx.size(); ++i){
+    if(a<xx[i]){
+      t=i;
+      break;
+    }
+  }
+  return t;
+}
+
 BicSpli::~BicSpli() 
 {
   delete npoo;
