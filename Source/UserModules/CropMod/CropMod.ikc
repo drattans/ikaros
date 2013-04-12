@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<group name="CropMod" description="CropMod transform module">
+
+  <description type="text">
+    Module using CropMod transform to find objects and their shape.
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="CropMod"
+	name="CropMod"
+	/>
+  </example>
+
+  <parameter name="NoC" type="int" default="1" min="1" max="100" description="Maximum number of objects"/>
+
+  <input name="INPUT" description="The input image with white for target elements" />
+  <input name="CENTER_IN" description="Coordinates of cluster centers" size_x="2" size_y="NoC" />
+  <output name="IMOUT" description="Image of interesting part of input" />
+  <!-- size_x="" size_y="" /> -->
+  <!--output name="CENTER_OUT" description="New coordinates of cluster centers" size_x="2" size_y="NoC"/-->
+  <!--output name="RADIOUS" description="Radious of the object" size="NoC"/-->
+  <!--output name="SHOR" description="Orientation of shape" size="NoC"/-->
+
+  <module class="CropMod" />
+
+  <files>
+    <file>CropMod.h</file>
+    <file>CropMod.cc</file>
+    <file>CropMod.ikc</file>
+  </files>
+
+</group>
+
