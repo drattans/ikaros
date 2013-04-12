@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<group name="ShapeMod" description="...">
+
+	<description type="text">
+	  ...
+	</description>
+
+	<example description="A simple example">
+		<module
+			class="ShapeMod"
+			name="ShapeMod"
+		/>
+	</example>
+
+	<module class="ShapeMod" />
+
+   <files>
+   		<file>ShapeMod.h</file>
+   		<file>ShapeMod.cc</file>
+   		<file>ShapeMod.ikc</file>
+   </files>
+
+</group>
+
