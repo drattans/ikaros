@@ -28,6 +28,7 @@ BicSpli::Init()
   }
   pupoo = new float[2];
   just = false;
+  first = false;
   pmode = false;//Push mode
   pdone = false;//Push done
   ddone = false;//Finished recently?
@@ -44,7 +45,7 @@ BicSpli::Init()
   tlc = tlcm;//Tic-lagg-counter
   tlc2 = tlcm;//Tic-lagg-counter
   na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;//New angle, initiated as a random float from -pi to pi
-  printf("NA!!!!!: %f\n", na);
+  //printf("NA!!!!!: %f\n", na);
   ok.push_back(true);
 }
 
@@ -64,36 +65,39 @@ BicSpli::Tick()
     //pmode = false;
     pdone = false;
     el[0] = -40.f;
-    /* Only once, but not first time
-	tlc=tlcm;
-	tpao=tpa;
-	pdone = false;
-	//float fbd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));
-	float fbd = sqrt(pow((pupo[0]-pupoo[0]), 2) + pow((pupo[1]-pupoo[1]),2));
-	fbo[0] = fb[0];
-	fbo[1] = fb[1];
-	if(fbd == 0){
-	  printf("Did not move (tpd): %f\n", fbd);
-	}
-	else if((pupoo[1]-pupo[1]) > 0){
-	  fb[0] = - acos((pupoo[0]-pupo[0])/fbd);
+    //* Only once, but not first time
+    if(first==true){
+      first=false;
+      tlc=tlcm;
+      tpao=tpa;
+      pdone = false;
+      //float fbd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));
+      float fbd = sqrt(pow((pupo[0]-pupoo[0]), 2) + pow((pupo[1]-pupoo[1]),2));
+      fbo[0] = fb[0];
+      fbo[1] = fb[1];
+      if(fbd == 0){
+	printf("Did not move (tpd): %f\n", fbd);
+      }
+      else if((pupoo[1]-pupo[1]) > 0){
+	fb[0] = - acos((pupoo[0]-pupo[0])/fbd);
+      }
+      else{
+	fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd) + pi;
+      }
+      fb[1] = na;//Attack angle
+      //fb[0] = -fb[0];
+      if(abs(tpao-fb[0])>pi/10.f){
+	int ttt=PosinX(tpao);
+	if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
+	  printf("Helped\n");
 	}
 	else{
-	  fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd) + pi;
+	  ok.at(ttt)=false;
 	}
-	fb[1] = na;//Attack angle
-	//fb[0] = -fb[0];
-	if(abs(tpao-fb[0])>pi/10.f){
-	  int ttt=PosinX(tpao);
-	  if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
-	    printf("Helped\n");
-	  }
-	  else{
-	    ok.at(ttt)=false;
-	  }
-	}
-	Manage(fb);
-	*/
+      }
+      Manage(fb);
+    }
+    //*/
   }
   else if((pupo[1]-tapo[1]) > 0){
     tpa =  acos(-(pupo[0]-tapo[0])/tpd)-pi;
@@ -110,7 +114,6 @@ BicSpli::Tick()
     //printf("Error (tpd): %f\n", tpd);
   }
 
-
   /***
    * The interessting part
    ***/
@@ -118,10 +121,13 @@ BicSpli::Tick()
     ATC(pin);
     fipo[0] = pin[0];
     fipo[1] = pin[2];
+    first = true;
 
-    /*
+    /***
+     * Prepare for pushing
+     ***/
     if(ddone==true){
-    *//*
+      ddone = false;
     	int t=PosinX(tpa);
 	if(ok.at(t) && xx.size()>1){
 	  printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
@@ -138,9 +144,7 @@ BicSpli::Tick()
 	  na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
 	  just=true;
 	}
-    *//*
     }
-    */
 
     /***
      * Evaluation

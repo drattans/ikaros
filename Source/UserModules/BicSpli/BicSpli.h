@@ -41,6 +41,7 @@ class BicSpli: public Module
   int tlcm;
 
   bool just;
+  bool first;
   bool pmode;//Push mode
   bool pdone;//Push done
   bool ddone;//Finished recently?
