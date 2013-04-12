@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<group name="EdgeMod" description="Finding edges in images">
+
+  <description type="text">
+    Finding edges in images using Roberts Algorithm.
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="EdgeMod"
+	name="EdgeMod"
+	/>
+  </example>
+
+  <input name="INPUT" description="The input image" />
+  <output name="OUTPUT" description="The output image" />
+
+  <module class="EdgeMod" />
+
+  <files>
+    <file>EdgeMod.h</file>
+    <file>EdgeMod.cc</file>
+    <file>EdgeMod.ikc</file>
+  </files>
+
+</group>
+
