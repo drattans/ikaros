@@ -70,11 +70,25 @@ ShapeMod::findShape()
 void
 ShapeMod::cropShape()
 {
+  vector<vector<float>> csbg;
+  csbg.resize(siX);
+  for(int imr=0; imr<siX; ++imr){
+    csbg[imr].resize(siY);
+  }
+  //Set all pixels in background to 0
+  for(int imr=0; imr<siX; ++imr){
+    for(int jmr=0; jmr<siY; ++jmr){
+      csbg[imr][jmr]=0;
+    }
+  }
   //Maybe not possible if fixed size is needed
-  //Crop, then place in standard sized frame?
+  //Crop, then place in middle of standard sized frame?
   //for all collumns:
+  //Look for first and last non-empty collumn
   int cred [4]={0,0,siY,0};//Edges of croped image(x1,x2,y1,y2)
   for(int ics=0; ics<siX; ++ics){
+    //for all row:
+    //Look for first and last non-empty row
     for(int jcs=0; jcs<siY; ++jcs){
       if(inimc[ics][jcs]==1){
 	if(cred[0]==0){
@@ -92,10 +106,14 @@ ShapeMod::cropShape()
       }   
     }
   }
-  //Look for first and last non-empty collumn
-  //for all row:
-  //Look for first and last non-empty row
   //add the croped part to vectorvector
+  int wid = cred[1]-cred[0];
+  int hei = cred[3]-cred[2];
+  for(int ii; ii<wid; ++ii){
+    for(int jj; jj<hei; ++jj){
+      csbg[ii+(siX-wid)/2][jj+(siY-hei)/2]=inimc[ii+cred[0]][jj+cred[2]];
+    }
+  }
 }
 
 void
