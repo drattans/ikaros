@@ -2,24 +2,34 @@
 
 <group name="ShapeMod" description="...">
 
-	<description type="text">
-	  ...
-	</description>
+  <description type="text">
+    ...
+  </description>
 
-	<example description="A simple example">
-		<module
-			class="ShapeMod"
-			name="ShapeMod"
-		/>
-	</example>
+  <example description="A simple example">
+    <module
+	class="ShapeMod"
+	name="ShapeMod"
+	/>
+  </example>
 
-	<module class="ShapeMod" />
+  <input name="INIMC" description="Input image" />
+  <input name="INIME" description="Edges of objects in imput image (not used at the moment)" />
 
-   <files>
-   		<file>ShapeMod.h</file>
-   		<file>ShapeMod.cc</file>
-   		<file>ShapeMod.ikc</file>
-   </files>
+  <output name="ERR" description="1=New shape is needed (not yet implemented)" size="1"/>
+  <output name="CIN" description="Old coordinates of cluster centers" size="2"/>
+
+  <output name="INDEX" description="Index of shape" size="1"/>
+  <output name="DIRECTION" description="Direction of shape" size="1"/>
+  <output name="COUT" description="New coordinates of cluster centers" size="2"/>
+
+  <module class="ShapeMod" />
+
+  <files>
+    <file>ShapeMod.h</file>
+    <file>ShapeMod.cc</file>
+    <file>ShapeMod.ikc</file>
+  </files>
 
 </group>
 
