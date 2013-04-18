@@ -16,7 +16,7 @@ CropMod::Init()
   //shor = GetOutputArray("SHOR");//Orientation of shape
 
   cropsif = 0.05f;//Half the length of the side of the croped image (fraction of large image)
-  cropsip = sizeX*cropsif;//Half the length of the side of the croped image (pixels)
+  cropsip = 50;//sizeX*cropsif;//Half the length of the side of the croped image (pixels)
 }
 
 void
@@ -30,7 +30,9 @@ CropMod::Tick()
     for(int j=centerIn[i][0]-cropsip; j<centerIn[i][0]+cropsip; ++j){
       for(int k=centerIn[i][1]-cropsip; k<centerIn[i][1]+cropsip; ++k){
 	//Place pixel (j,k) in output matrix (i)
-	imout[j-(center[i][0]-cropsip)][k-(centerIn[i][1]-corpsip)]=input[j][k];
+	int a = j-(centerIn[i][0]-cropsip);
+	int b = k-(centerIn[i][1]-cropsip);
+	imout[a][b]=input[j][k];
       }
     }
   }
