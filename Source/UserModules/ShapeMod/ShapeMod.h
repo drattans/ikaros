@@ -10,7 +10,7 @@ public:
     static Module * Create(Parameter * p) { return new ShapeMod(p); }
 
     float ** iminc;
-    float ** imine;
+    //float ** imine;
 
     int siX;
     int siY;
@@ -18,7 +18,7 @@ public:
 
     float pi;
 
-    float * err;
+    //float * err;
     float * cin;
     float * cout;
     float * shapeIn;

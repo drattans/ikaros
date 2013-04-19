@@ -13,11 +13,11 @@
 	/>
   </example>
 
-  <input name="INIMC" description="Input image" />
-  <input name="INIME" description="Edges of objects in imput image (not used at the moment)" />
+  <input name="IMINC" description="Input image" size_x="100" size_y="100"/>
+  <!--input name="INIME" description="Edges of objects in imput image (not used at the moment)" /-->
 
-  <output name="ERR" description="1=New shape is needed (not yet implemented)" size="1"/>
-  <output name="CIN" description="Old coordinates of cluster centers" size="2"/>
+  <!--input name="ERR" description="1=New shape is needed (not yet implemented)" size="1"/-->
+  <input name="CIN" description="Old coordinates of cluster centers" size="2"/>
 
   <output name="INDEX" description="Index of shape" size="1"/>
   <output name="DIRECTION" description="Direction of shape" size="1"/>

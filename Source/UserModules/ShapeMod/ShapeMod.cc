@@ -1,6 +1,8 @@
 #include "ShapeMod.h"
 #include "math.h"
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 using namespace ikaros;
 using namespace std;
@@ -8,13 +10,13 @@ using namespace std;
 void
 ShapeMod::Init()
 {
-  iminc=GetInputMatrix("INIMC");
-  imine=GetInputMatrix("INIME");//Edge, not in use yet
-  siX=GetInputSizeX("INIMC");//Should be 100
-  siY=GetInputSizeY("INIMC");//Should be 100
-  //siX=100;
-  //siY=100;
-  err=GetInputArray("ERR");//Look for new shape?(1==true)
+  iminc=GetInputMatrix("IMINC");
+  //imine=GetInputMatrix("INIME");//Edge, not in use yet
+  //siX=GetInputSizeX("INIMC");//Should be 100
+  //siY=GetInputSizeY("INIMC");//Should be 100
+  siX=100;
+  siY=100;
+  //err=GetInputArray("ERR");//Look for new shape?(1==true)
   cin=GetInputArray("CIN");//Center of input
   noR=10;//Number of rotations
   pi=atan(1.f)*4.f;//Pi
@@ -28,12 +30,28 @@ void
 ShapeMod::Tick()
 {
   if(proSh.size()==0){// || err<0.5){
-    makeShape();
+    float av=0;
+    for(int m=0; m<siX; ++m){//proSh[i].size()=150
+      for(int n=0; n<siY; ++n){
+	av+=iminc[m][n];
+      }
+    }
+    av/=siX*siY;
+    printf("AV=%f\n", av);
+    if(av>0.01){
+      makeShape();
+    }
   }
-  findShape();
-  cout[0]+=cin[0];
-  cout[1]+=cin[1];
-
+  if(proSh.size()>0){
+    findShape();
+    cout[0]+=cin[0];
+    cout[1]+=cin[1];
+  }
+  else{
+    cout[0]=cin[0];
+    cout[1]=cin[1];
+  }
+  printf("Known shapes: %i\n", proSh.size());
   //Is largest radious possible to find?
   //Yes, using information from the croping process when the shape was created
 }
@@ -55,7 +73,7 @@ ShapeMod::findShape()
 	  for(int m=0; m<proSh[i].size(); ++m){//proSh[i].size()=150
 	    for(int n=0; n<proSh[i].size(); ++n){
 	      if(j+m>0 && siX<j+m && k+n>0 && siY<k+n){
-		if(iminc[j+m][k+n]==1 && proSh[i][l][m][n]==1){
+		if(iminc[j+m][k+n]>0.5 && proSh[i][l][m][n]>0.5){
 		  ++count;
 		}
 	      }
@@ -100,7 +118,7 @@ ShapeMod::makeShape()
     //for all row:
     //Look for first and last non-empty row
     for(int jcs=0; jcs<siY; ++jcs){
-      if(iminc[ics][jcs]==1){
+      if(iminc[ics][jcs]>0.5){
 	if(cred[0]==0){
 	  cred[0]=ics;
 	}
@@ -155,7 +173,7 @@ ShapeMod::makeShape()
     si=sbg;
     for(int mmr=0; mmr<wid; ++mmr){
       for(int nmr=0; nmr<hei; ++nmr){
-	if(csbg[mmr][nmr]==1){
+	if(csbg[mmr][nmr]>0.5){
 	  nx=sqrt(pow((double)(mmr-wid/2),2)+pow((double)(nmr-hei/2),2))*cos(imr*2*pi/noR)+mmr+siX*0.25;
 	  ny=sqrt(pow((double)(mmr-wid/2),2)+pow((double)(nmr-hei/2),2))*sin(imr*2*pi/noR)+nmr+siY*0.25;
 	  si[nx][ny]=1;
@@ -171,7 +189,21 @@ ShapeMod::makeShape()
 void
 ShapeMod::printShape()
 {
-  //for-loop through all the pixels, and print them to a textfile
+  ofstream sho;
+  sho.open ("shape.txt");
+  //For each shape:
+  //for(int i=0; i<proSh.size(); ++i){
+  //For each orientation
+  //for(int l=0; l<noR; ++l){
+  //For each x-position:
+  for(int m=0; m<150; ++m){//proSh[i].size()=150
+    for(int n=0; n<150; ++n){
+      sho << proSh[0][0][m][n];
+    }
+    sho << "\n";
+  }
+  //}
+  //}
 }
 
 static InitClass init("ShapeMod", &ShapeMod::Create, "Source/UserModules/ShapeMod/");
