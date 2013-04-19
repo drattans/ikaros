@@ -17,11 +17,7 @@
 
   <input name="INPUT" description="The input image with white for target elements" />
   <input name="CENTER_IN" description="Coordinates of cluster centers" size_x="2" size_y="NoC" />
-  <output name="IMOUT" description="Image of interesting part of input" />
-  <!-- size_x="" size_y="" /> -->
-  <!--output name="CENTER_OUT" description="New coordinates of cluster centers" size_x="2" size_y="NoC"/-->
-  <!--output name="RADIOUS" description="Radious of the object" size="NoC"/-->
-  <!--output name="SHOR" description="Orientation of shape" size="NoC"/-->
+  <output name="IMOUT" description="Image of interesting part of input" size_x="100" size_y="100" />
 
   <module class="CropMod" />
 
