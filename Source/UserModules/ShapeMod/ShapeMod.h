@@ -30,6 +30,8 @@ public:
     ShapeMod(Parameter * p) : Module(p) {}
     virtual ~ShapeMod() {}
 
+    int eval(int je, int ke, int le, int ie);
+
     void Init();
     void Tick();
     void findShape();
