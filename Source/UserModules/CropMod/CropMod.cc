@@ -19,24 +19,30 @@ CropMod::Init()
 void
 CropMod::Tick()
 {
-  //centerIn[0][0]=centerIn[0][0]*640.f;
-  //centerIn[1][0]=centerIn[1][0]*480.f;
-  printf("X=%f, Y=%f\n", centerIn[0], centerIn[1]);
+  centerIn[0][0]=centerIn[0][0]*sizeX;
+  centerIn[0][1]=centerIn[0][1]*sizeY;
+  //printf("X=%f, Y=%f\n", centerIn[0][0], centerIn[0][1]);
   NoC=1;//At least start with only one shape
-  int i=1;
+  int i=0;
   //for(int i=0; i<NoC; ++i){//For all clusters
   //Crop out the object;
   if(centerIn[i][0]-cropsip >= 0 && centerIn[i][1]-cropsip >= 0 && centerIn[i][0]+cropsip < sizeX && centerIn[i][1]+cropsip < sizeY){
+    //printf("CASE 1!\n");
     for(int j=centerIn[i][0]-cropsip; j<centerIn[i][0]+cropsip; ++j){
       for(int k=centerIn[i][1]-cropsip; k<centerIn[i][1]+cropsip; ++k){
 	//Place pixel (j,k) in output matrix (i)
 	int a = j-(centerIn[i][0]-cropsip);
 	int b = k-(centerIn[i][1]-cropsip);
-	imout[a][b]=input[j][k];
+	//printf("(A,B)=(%i,%i)\n", a, b);
+	//printf("(X,Y)=(%i,%i)\n", sizeX, sizeY);
+	//printf("(J,K)=(%i,%i)\n", j, k);
+	//printf("(X,Y)=(%f,%f)\n", centerIn[i][0]+cropsip, centerIn[i][1]+cropsip);
+	imout[b][a]=input[k][j];
       }
     }
   }
   else{//if it's close to the edge
+    //printf("CASE 2!\n");
     int sx=centerIn[i][0]-cropsip;
     int sy=centerIn[i][1]-cropsip;
     if(centerIn[i][0]-cropsip < 0){
@@ -56,7 +62,7 @@ CropMod::Tick()
 	//Place pixel (j,k) in output matrix (i)
 	int a = j-sx;
 	int b = k-sy;
-	imout[a][b]=input[j][k];
+	imout[b][a]=input[k][j];
       }
     }
   }
