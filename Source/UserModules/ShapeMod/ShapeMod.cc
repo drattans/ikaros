@@ -20,7 +20,7 @@ ShapeMod::Init()
   siY=100;
   //err=GetInputArray("ERR");//Look for new shape?(1==true)
   cin=GetInputArray("CIN");//Center of input
-  noR=1;//Number of rotations
+  noR=10;//Number of rotations
   pi=atan(1.f)*4.f;//Pi
   cout=GetOutputArray("COUT");
   shapeIn=GetOutputArray("INDEX");
@@ -93,7 +93,7 @@ ShapeMod::findShape()
       }
     }
     //*/
-    //*//Greedy
+    /*//Greedy
     int l=0;
     bool fin=false;
     int lc=0;
@@ -150,7 +150,7 @@ ShapeMod::findShape()
     printf("Count!!: %i\n", cold);
     printf("Loops!!: %i\n", lc);
     //*/
-    /*//Simulated annealing
+    //*//Simulated annealing
     int l=0;
     int j=-25;
     int k=-25;
@@ -159,9 +159,12 @@ ShapeMod::findShape()
     int count=0;
     int cold=0;
     cold=eval(j, k, l, i);
-    for(int anva=0; anva<100; ++anva){
+    for(int anva=0; anva<300; ++anva){
       j=jo+rand()%100/(anva+1)+rand()%2;
       k=ko+rand()%100/(anva+1)+rand()%2;
+      l=rand()%noR;
+      //j=jo+rand()%(100-anva)+rand()%2;
+      //k=ko+rand()%(100-anva)+rand()%2;
       count=eval(j, k, l, i);
       if(count>cold){
 	jo=j;
@@ -174,7 +177,7 @@ ShapeMod::findShape()
     cout[1]=ko+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
     shapeIn[0]=i;//Shape index
     shapeDir[0]=l;//Shape direction
-    printf("(J,K)=(%i,%i) ([%d:%d])\n", jo, ko, -siX/2, 0);
+    printf("(J,K)=(%i,%i) ([%d:%d])\n", jo, ko, l, 0);
     printf("Count!!: %i\n", cold);
     //*/
   }
@@ -249,13 +252,13 @@ ShapeMod::makeShape()
   int hei = cred[3]-cred[2];//Height of croped image
   //int flag = 0;
   //printf("W=%i, H=%i\n", wid, hei);
-  // int hmp = 0;
+  //int hmp = 0;
   for(int ii=0; ii<wid; ++ii){
     for(int jj=0; jj<hei; ++jj){
       //++flag;
       //printf("Flag=%i, Val=%f\n", flag, iminc[ii+cred[0]][jj+cred[2]]);
       csbg[ii+(siX-wid)/2][jj+(siY-hei)/2]=iminc[ii+cred[0]][jj+cred[2]];
-      //  if(iminc[ii+cred[0]][jj+cred[2]]==1){
+      //if(iminc[ii+cred[0]][jj+cred[2]]==1){
       //++hmp;
       //}
     }
@@ -294,8 +297,8 @@ ShapeMod::makeShape()
       for(int nmr=0; nmr<siY; ++nmr){
 	//printf("?=%f\n", csbg[mmr][nmr]);
 	if(csbg[mmr][nmr]>0.5){
-	  nx=mmr+25;//sqrt(pow((double)(mmr-siX/2),2)+pow((double)(nmr-siY/2),2))*cos(imr*2*pi/noR)+mmr+siX*0.25;
-	  ny=nmr+25;//sqrt(pow((double)(mmr-siX/2),2)+pow((double)(nmr-siY/2),2))*sin(imr*2*pi/noR)+nmr+siY*0.25;
+	  nx=(mmr-50)*cos(imr*2*pi/noR)-(nmr-50)*sin(imr*2*pi/noR)+75;
+	  ny=(mmr-50)*sin(imr*2*pi/noR)+(nmr-50)*cos(imr*2*pi/noR)+75;
 	  si[nx][ny]=1;
 	  //printf("?=%f, nx=%i, ny=%i\n", si[nx][ny], nx, ny);
 	}
@@ -318,17 +321,19 @@ ShapeMod::printShape()
   //for(int l=0; l<noR; ++l){
   //For each x-position:
   //printf("(%i, %i, %i, %i)\n", proSh.size(), proSh[0].size(), proSh[0][0].size(), proSh[0][0][0].size());
+  for(int mn=0; mn<noR; ++mn){
   int hmpp = 0;
   for(int m=0; m<150; ++m){//proSh[i].size()=150
     for(int n=0; n<150; ++n){
-      if(proSh[0][0][m][n]==1){
+      if(proSh[0][mn][m][n]==1){
 	++hmpp;
       }
-      sho << proSh[0][0][m][n];
+      sho << proSh[0][mn][m][n];
     }
     sho << "\n";
   }
   printf("*~~~~~\n* HMPP: %i!\n*~~~~~\n", hmpp);
+  }
   //}
   //}
 }
