@@ -17,6 +17,8 @@ class BicSpli: public Module
   float * tapo;
   float * pupo;
   float * pin;
+  float * indir;
+  float * ininf;
   float * npo;
   float * npoo;
   float * pupoo;
@@ -25,6 +27,7 @@ class BicSpli: public Module
   float * fipo;//Position of finger (x,y)
   float * tg;
   float * el;
+  float * nns;
   float tpa;//Target-pushable angle
   float tpao;//Target-pushable angle old
   float radious;
@@ -35,10 +38,15 @@ class BicSpli: public Module
   float abcx;
   float abcy;
   float pi;
+  float rota;
+  float shift;
+  float shift2;
 
+  int noR;
   int tlc;
   int tlc2;
   int tlcm;
+  int inin;
 
   bool just;
   bool first;
@@ -48,19 +56,22 @@ class BicSpli: public Module
   bool initi;//Push initialised
   bool firstM;
 
-  VecDoub xx;
-  VecDoub yy;
-  VecDoub temPo;
+  vector<VecDoub> xx;
+  vector<VecDoub> yy;
+  //vector<VecDoub> temPo;
 
-  vector<bool> ok;
+  vector<vector<bool>> ok;
 
  BicSpli(Parameter * p) : Module(p) {}
   virtual ~BicSpli();
 
   void Init();
   void Tick();
+  void NSH();
   void Manage(float fb[]);
   void ATC(float *aip);
+
+  float mtci(float angtch);
 
   int PosinX(float a);
 };
