@@ -18,6 +18,7 @@
 
   <!--input name="ERR" description="1=New shape is needed (not yet implemented)" size="1"/-->
   <input name="CIN" description="Old coordinates of cluster centers" size="2"/>
+  <input name="ERR" description="Need new shape?" size="1"/>
 
   <output name="INDEX" description="Index of shape" size="1"/>
   <output name="DIRECTION" description="Direction of shape" size="1"/>

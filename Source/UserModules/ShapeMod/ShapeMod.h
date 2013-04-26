@@ -18,7 +18,7 @@ public:
 
     float pi;
 
-    //float * err;
+    float * err;
     float * cin;
     float * cout;
     float * shapeIn;

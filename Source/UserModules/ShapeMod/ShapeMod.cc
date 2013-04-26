@@ -18,7 +18,7 @@ ShapeMod::Init()
   //siY=GetInputSizeY("INIMC");//Should be 100
   siX=100;
   siY=100;
-  //err=GetInputArray("ERR");//Look for new shape?(1==true)
+  err=GetInputArray("ERR");//Need new shape?(1==true)
   cin=GetInputArray("CIN");//Center of input
   noR=10;//Number of rotations
   pi=atan(1.f)*4.f;//Pi
@@ -33,7 +33,7 @@ ShapeMod::Tick()
 {
   cin[0]=cin[0]*640.f;
   cin[1]=cin[1]*480.f;
-  if(proSh.size()==0){// || err<0.5){
+  if(proSh.size()==0 || err[0]>0.5){
     float av=0;
     for(int m=0; m<siX; ++m){//proSh[i].size()=150
       for(int n=0; n<siY; ++n){
@@ -41,7 +41,7 @@ ShapeMod::Tick()
       }
     }
     av/=siX*siY;
-    printf("AV=%f\n", av);
+    //printf("AV=%f\n", av);
     if(av>0.05){
       makeShape();
     }
@@ -64,15 +64,15 @@ ShapeMod::Tick()
 void
 ShapeMod::findShape()
 {
-  printf("Finding shape!\n");
+  //printf("Finding shape!\n");
   int countM=0;
   //For each shape:
   for(int i=0; i<proSh.size(); ++i){
-    printf("Shape number %i!\n", i);
+    //printf("Shape number %i!\n", i);
     /*//Brute force
     //For each orientation
     for(int l=0; l<noR; ++l){
-      printf("Rotation number %i!\n", l);
+      //printf("Rotation number %i!\n", l);
       //For each x-position:
       for(int j=-35; j<-15; ++j){
 	//For each y-position:
@@ -146,9 +146,9 @@ ShapeMod::findShape()
     cout[1]=k+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
     shapeIn[0]=i;//Shape index
     shapeDir[0]=l;//Shape direction
-    printf("(J,K)=(%i,%i) ([%d:%d])\n", j, k, -siX/2, 0);
-    printf("Count!!: %i\n", cold);
-    printf("Loops!!: %i\n", lc);
+    //printf("(J,K)=(%i,%i) ([%d:%d])\n", j, k, -siX/2, 0);
+    //printf("Count!!: %i\n", cold);
+    //printf("Loops!!: %i\n", lc);
     //*/
     //*//Simulated annealing
     int l=0;
@@ -170,15 +170,15 @@ ShapeMod::findShape()
 	jo=j;
 	ko=k;
 	cold=count;
-	printf("ANVA!!: %i\n", anva);
+	//printf("ANVA!!: %i\n", anva);
       }
     }
     cout[0]=jo+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
     cout[1]=ko+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
     shapeIn[0]=i;//Shape index
     shapeDir[0]=l;//Shape direction
-    printf("(J,K)=(%i,%i) ([%d:%d])\n", jo, ko, l, 0);
-    printf("Count!!: %i\n", cold);
+    //printf("(J,K)=(%i,%i) ([%d:%d])\n", jo, ko, l, 0);
+    //printf("Count!!: %i\n", cold);
     //*/
   }
 }
@@ -198,7 +198,7 @@ ShapeMod::eval(int je, int ke, int le, int ie)
   }
   /*
   if(counte>0){
-    printf("Count!!: %i\n", counte);
+    //printf("Count!!: %i\n", counte);
   }
   //*/
   return counte;
@@ -207,7 +207,7 @@ ShapeMod::eval(int je, int ke, int le, int ie)
 void
 ShapeMod::makeShape()
 {
-  printf("Making shape!\n");
+  //printf("Making shape!\n");
   /*******
    * 
    * Crop the image
@@ -332,7 +332,7 @@ ShapeMod::printShape()
     }
     sho << "\n";
   }
-  printf("*~~~~~\n* HMPP: %i!\n*~~~~~\n", hmpp);
+  //printf("*~~~~~\n* HMPP: %i!\n*~~~~~\n", hmpp);
   }
   //}
   //}
