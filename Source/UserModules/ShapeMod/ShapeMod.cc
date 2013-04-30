@@ -13,6 +13,7 @@ ShapeMod::Init()
 {
   srand(std::time(NULL));
   iminc=GetInputMatrix("IMINC");
+  imout=GetOutputMatrix("IMOUT");
   //imine=GetInputMatrix("INIME");//Edge, not in use yet
   //siX=GetInputSizeX("INIMC");//Should be 100
   //siY=GetInputSizeY("INIMC");//Should be 100
@@ -20,12 +21,16 @@ ShapeMod::Init()
   siY=100;
   err=GetInputArray("ERR");//Need new shape?(1==true)
   cin=GetInputArray("CIN");//Center of input
-  noR=10;//Number of rotations
+  noR=1;//Number of rotations
   pi=atan(1.f)*4.f;//Pi
   cout=GetOutputArray("COUT");
   shapeIn=GetOutputArray("INDEX");
   shapeDir=GetOutputArray("DIRECTION");
   //proSh;
+  //mix=-25;
+  //max=-25;
+  //miy=-25;
+  //may=-25;
 }
 
 void
@@ -33,6 +38,33 @@ ShapeMod::Tick()
 {
   cin[0]=cin[0]*640.f;
   cin[1]=cin[1]*480.f;
+  /* Filling gaps in input
+  vector<vector<float>> iminct;// = new float[siX][siY];
+  iminct.resize(siX);
+  for(int imr=0; imr<siX; ++imr){
+    iminct[imr].resize(siY);
+  }
+  for(int k=0; k<1; ++k){
+    for (int j =1; j<siX-1; j++){
+      for (int i=1; i<siY-1; i++){
+	float t = iminc[j][i];
+	for (int jj=-1; jj<2; jj++){
+	  for (int ii=-1; ii<2; ii++){
+	    if (iminc[j+jj][i+ii] > t){
+	      t = iminc[j+jj][i+ii];
+	    }
+	  }
+	}
+	iminct[j-1][i-1] = t;
+      }
+    }
+    for (int j =0; j<siX; j++){
+      for (int i=0; i<siY; i++){
+	iminc[j][i]=iminct[j][i];
+      }
+    }
+  }
+  //*/
   if(proSh.size()==0 || err[0]>0.5){
     float av=0;
     for(int m=0; m<siX; ++m){//proSh[i].size()=150
@@ -67,10 +99,16 @@ ShapeMod::findShape()
   //printf("Finding shape!\n");
   int countM=0;
   //For each shape:
+  //int ko;
+  //int jo;
+  //int lo;
   for(int i=0; i<proSh.size(); ++i){
     //printf("Shape number %i!\n", i);
-    /*//Brute force
+    //*//Brute force
     //For each orientation
+    int ko;
+    int jo;
+    int lo=0;
     for(int l=0; l<noR; ++l){
       //printf("Rotation number %i!\n", l);
       //For each x-position:
@@ -82,18 +120,41 @@ ShapeMod::findShape()
 	  count=eval(j, k, l, i);
 	  if(count>countM){
 	    countM=count;//Agreeing pixels
-	    cout[0]=j+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
-	    cout[1]=k+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
+	    cout[0]=cin[0]+(k+25);//j+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
+	    cout[1]=cin[1]+(j+25);//k+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
 	    shapeIn[0]=i;//Shape index
 	    shapeDir[0]=l;//Shape direction
-	    //printf("(J,K)=(%i,%i) ([%d:%d])\n", j, k, -siX/2, 0);
+	    ko=k;
+	    jo=j;
+	    lo=l;
+	    //printf("(J,K)=(%i,%i)\n", j, k);
 	    //printf("Count!!: %i\n", count);
 	  }
 	}
       }
     }
+    /*
+    if(mix>jo){
+      mix=jo;
+    }
+    if(max<jo){
+      max=jo;
+    }
+    if(miy>ko){
+      miy=ko;
+    }
+    if(may<ko){
+      may=ko;
+    }
+    printf("(X,Y)=([%i,%i],[%i,%i])\n", mix, max, miy, may);
+    */
+    int l=lo;
+    //printf("Count!!: %i, %i, %i\n", l, lo, i);
     //*/
     /*//Greedy
+    int ko;
+    int jo;
+    int lo;
     int l=0;
     bool fin=false;
     int lc=0;
@@ -142,15 +203,20 @@ ShapeMod::findShape()
 	fin=true;
       }
     }
-    cout[0]=j+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
-    cout[1]=k+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
+    ko=k;
+    jo=j;
+    lo=l;
+    cout[0]=cin[0]+(k+25);
+    cout[1]=cin[1]+(j+25);
+    //cout[0]=j+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
+    //cout[1]=k+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
     shapeIn[0]=i;//Shape index
     shapeDir[0]=l;//Shape direction
     //printf("(J,K)=(%i,%i) ([%d:%d])\n", j, k, -siX/2, 0);
     //printf("Count!!: %i\n", cold);
     //printf("Loops!!: %i\n", lc);
     //*/
-    //*//Simulated annealing
+    /*//Simulated annealing
     int l=0;
     int j=-25;
     int k=-25;
@@ -159,27 +225,38 @@ ShapeMod::findShape()
     int count=0;
     int cold=0;
     cold=eval(j, k, l, i);
-    for(int anva=0; anva<300; ++anva){
+    for(int anva=0; anva<100; ++anva){
       j=jo+rand()%100/(anva+1)+rand()%2;
       k=ko+rand()%100/(anva+1)+rand()%2;
       l=rand()%noR;
-      //j=jo+rand()%(100-anva)+rand()%2;
-      //k=ko+rand()%(100-anva)+rand()%2;
+      //j=jo+rand()%(1600-anva)+rand()%2;
+      //k=ko+rand()%(1600-anva)+rand()%2;
       count=eval(j, k, l, i);
       if(count>cold){
 	jo=j;
 	ko=k;
 	cold=count;
-	//printf("ANVA!!: %i\n", anva);
+	printf("ANVA!!: %i\n", anva);
       }
     }
-    cout[0]=jo+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
-    cout[1]=ko+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
+    cout[0]=cin[0]+(k+25);
+    cout[1]=cin[1]+(j+25);
+    //cout[0]=(jo+25)-25+proSh[i][l].size()/2 + cin[0]-siX/2;//Center in x
+    //cout[1]=(ko+25)-25+proSh[i][l].size()/2 + cin[1]-siY/2;//Center in y
     shapeIn[0]=i;//Shape index
     shapeDir[0]=l;//Shape direction
     //printf("(J,K)=(%i,%i) ([%d:%d])\n", jo, ko, l, 0);
     //printf("Count!!: %i\n", cold);
     //*/
+    for(int m=0; m<proSh[i][l].size(); ++m){//proSh[i].size()=150
+      for(int n=0; n<proSh[i][l].size(); ++n){
+	if(jo+m>0 && siX>jo+m && ko+n>0 && siY>ko+n){
+	  //if(iminc[jo+m][ko+n]>0.5 && proSh[i][l][m][n]>0.5){
+	  imout[m][n]=(iminc[jo+m][ko+n]+proSh[i][l][m][n])/2;
+	  //}
+	}
+      }
+    }
   }
 }
 
@@ -293,6 +370,20 @@ ShapeMod::makeShape()
   for(int imr=0; imr<noR; ++imr){
     vector<vector<float>> si;
     si=sbg;
+    //*
+    for(int mmr=0; mmr<150; ++mmr){
+      for(int nmr=0; nmr<150; ++nmr){
+	//printf("?=%f\n", csbg[mmr][nmr]);
+	nx=(mmr-75)*cos(imr*2*pi/noR)+(nmr-75)*sin(imr*2*pi/noR)+50;
+	ny=-(mmr-75)*sin(imr*2*pi/noR)+(nmr-75)*cos(imr*2*pi/noR)+50;
+	if(nx>0 && nx<100 && ny>0 && ny<100 && csbg[nx][ny]>0.5){
+	  si[mmr][nmr]=1;
+	  //printf("?=%f, nx=%i, ny=%i\n", si[nx][ny], nx, ny);
+	}
+      }
+    }
+    //*/
+    /*
     for(int mmr=0; mmr<siX; ++mmr){
       for(int nmr=0; nmr<siY; ++nmr){
 	//printf("?=%f\n", csbg[mmr][nmr]);
@@ -304,10 +395,11 @@ ShapeMod::makeShape()
 	}
       }
     }
+    //*/
     siv.push_back(si);
   }
   proSh.push_back(siv);
-  //printShape();//When a new shape is created, the shapes are printed to a file for inspection
+  printShape();//When a new shape is created, the shapes are printed to a file for inspection
 }
 
 void

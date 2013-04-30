@@ -14,6 +14,7 @@
   </example>
 
   <input name="IMINC" description="Input image" size_x="100" size_y="100"/>
+  <output name="IMOUT" description="Output image" size_x="150" size_y="150"/>
   <!--input name="INIME" description="Edges of objects in imput image (not used at the moment)" /-->
 
   <!--input name="ERR" description="1=New shape is needed (not yet implemented)" size="1"/-->

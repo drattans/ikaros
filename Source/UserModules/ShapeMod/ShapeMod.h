@@ -10,11 +10,16 @@ public:
     static Module * Create(Parameter * p) { return new ShapeMod(p); }
 
     float ** iminc;
+    float ** imout;
     //float ** imine;
 
     int siX;
     int siY;
     int noR;
+    //int mix;
+    //int max;
+    //int miy;
+    //int may;
 
     float pi;
 
