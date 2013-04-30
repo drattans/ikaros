@@ -297,8 +297,19 @@ BicSpli::Manage(float fb[])
   if(xx[inin].size()>1){
     Spline_interp *pushEffectManage = new Spline_interp(xx[inin],yy[inin]);
     nat = mtci(pushEffectManage->interp(mtci(fb[0]+shift))-shift);
-    if(abs(nat-fb[1])>teM || ok[inin].at(PosinX(mtci(fb[0]+shift)))==false){//Prediction wrong, time to learn
+    double minXV = -pi;
+    double maxXV = pi;
+    if(PosinX(mtci(fb[0]+shift))>0){
+      minXV=xx[inin][PosinX(mtci(fb[0]+shift))-1];
+    }
+    else if(PosinX(mtci(fb[0]+shift))<xx[inin].size()){
+      maxXV=xx[inin].at(PosinX(mtci(fb[0]+shift)));
+    }
+    if(abs(nat-fb[1])>teM || ok[inin].at(PosinX(mtci(fb[0]+shift)))==false || fabs(maxXV-minXV)>pi/10){//Prediction wrong, time to learn
       int t=PosinX(mtci(fb[0]+shift));
+      //if(abs(nat-fb[1])<=teM && ok[inin].at(PosinX(mtci(fb[0]+shift)))==true && fabs(maxXV-minXV)>pi/10){
+      //printf("----------*'~-USEFULL-~'*----------\n");
+      //}
       if(fb[1]>pi || fb[1]<-pi){
 	//printf("YY: %f, time: %i\n", fb[1], xx[inin].size());
       }
