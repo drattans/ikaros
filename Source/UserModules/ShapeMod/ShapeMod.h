@@ -16,6 +16,7 @@ public:
     int siX;
     int siY;
     int noR;
+    int nodl;
     //int mix;
     //int max;
     //int miy;
@@ -26,6 +27,7 @@ public:
     float * err;
     float * cin;
     float * cout;
+    float * norou;
     float * shapeIn;
     float * shapeDir;
 

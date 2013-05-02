@@ -14,13 +14,13 @@
   </example>
 
   <input name="IMINC" description="Input image" size_x="100" size_y="100"/>
-  <output name="IMOUT" description="Output image" size_x="150" size_y="150"/>
-  <!--input name="INIME" description="Edges of objects in imput image (not used at the moment)" /-->
-
-  <!--input name="ERR" description="1=New shape is needed (not yet implemented)" size="1"/-->
   <input name="CIN" description="Old coordinates of cluster centers" size="2"/>
   <input name="ERR" description="Need new shape?" size="1"/>
 
+  <parameter name="NODL" type="int" default="1" min="0" max="20" description="Number of dilation loops" />
+
+  <output name="IMOUT" description="Output image" size_x="150" size_y="150"/>
+  <output name="NOROU" description="Number of rotations" size="1"/>
   <output name="INDEX" description="Index of shape" size="1"/>
   <output name="DIRECTION" description="Direction of shape" size="1"/>
   <output name="COUT" description="New coordinates of cluster centers" size="2"/>
