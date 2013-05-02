@@ -28,6 +28,7 @@ class BicSpli: public Module
   float * tg;
   float * el;
   float * nns;
+  float * norin;
   float tpa;//Target-pushable angle
   float tpao;//Target-pushable angle old
   float radious;
@@ -39,7 +40,6 @@ class BicSpli: public Module
   float abcy;
   float pi;
   float rota;
-  float shift;
   float shift2;
 
   int noR;

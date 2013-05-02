@@ -20,8 +20,10 @@ BicSpli::Init()
   npo = GetOutputArray("NPO");//New finger position (x,y)
   el = GetOutputArray("EL");//Elevation of finger
   nns = GetOutputArray("NNS");//Need new shape?
+  norin = GetInputArray("NORIN");
   abcx = GetFloatValue("ABCX", 0.5f);//Arm base coordinate (x)
   abcy = GetFloatValue("ABCY", 1.f);//Arm base coordinate (y)
+  noR = (int)norin[0];
   pi = atan(1.f)*4.f;//Pi
   h = 525.f;//Camera hight from surface (mm)
   if(!npoo){//=if(npoo == NULL){
@@ -56,18 +58,19 @@ BicSpli::Init()
   xx.push_back(xx1);
   yy.push_back(yy1);
   ok.push_back(ok1);
-  noR = 10;
   rota = 2*pi/noR;
 }
 
 void
 BicSpli::Tick()
 {
+  noR = (int)norin[0];
+  rota = 2*pi/noR;
   nns[0] = 0.f;
   inin = (int)ininf[0];
-  shift2 = (int)indir[0]*rota;
-  shift2 = 0;
-  shift = 0;
+  shift2 = indir[0]*rota;
+  //printf("Nor: %i, Rot: %f, In: %f\n", noR, rota, indir[0]);
+  //shift2 = 0;
   tapo[0] = tapo[0] - abcx;
   tapo[1] = abcy - tapo[1];
   pupo[0] = pupo[0] - abcx;
@@ -87,7 +90,6 @@ BicSpli::Tick()
       tlc=tlcm;
       tpao=tpa;
       pdone = false;
-      //float fbd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));
       float fbd = sqrt(pow((pupo[0]-pupoo[0]), 2) + pow((pupo[1]-pupoo[1]),2));
       fbo[0] = fb[0];
       fbo[1] = fb[1];
@@ -116,13 +118,11 @@ BicSpli::Tick()
     //*/
   }
   else if((pupo[1]-tapo[1]) > 0){
-    tpa = acos(-(pupo[0]-tapo[0])/tpd)-pi;
+    tpa = mtci(acos(-(pupo[0]-tapo[0])/tpd)-pi+shift2);
   }
   else{
-    tpa = acos((pupo[0]-tapo[0])/tpd);
+    tpa = mtci(acos((pupo[0]-tapo[0])/tpd)+shift2);
   }
-  //tpa=-tpa;
-  //printf("Tpa: %f\n", tpa);
   if(tpa<-pi || tpa>pi){
     printf("Error (tpa): %f\n", tpa);
   }
@@ -144,12 +144,11 @@ BicSpli::Tick()
      ***/
     if(ddone==true){
       ddone = false;
-      //printf("Tpa: %f, Shift: %f, Mtci: %f\n", tpa, shift, mtci(tpa+shift));
-      int t=PosinX(mtci(tpa+shift));
+      int t=PosinX(tpa);
       if(ok[inin].at(t) && xx[inin].size()>1){
 	printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	Spline_interp *pushEffect = new Spline_interp(xx[inin],yy[inin]);
-	na = mtci(pushEffect->interp(mtci(tpa+shift))-shift);
+	na = mtci((pushEffect->interp(tpa))+shift2);
 	//printf("M: Na: %f, Tpa: %f\n", na, tpa);
 	//if(na<-pi || na>pi){
 	//na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
@@ -199,11 +198,11 @@ BicSpli::Tick()
 	  }
 	}
 	Manage(fb);
-	int t=PosinX(mtci(tpa+shift));
+	int t=PosinX(tpa);
 	if(ok[inin].at(t) && xx[inin].size()>1){
 	  printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	  Spline_interp *pushEffect = new Spline_interp(xx[inin],yy[inin]);
-	  na = mtci(pushEffect->interp(mtci(tpa+shift))-shift);
+	  na = mtci((pushEffect->interp(tpa))+shift2);
 	  //printf("M: Na: %f, Tpa: %f\n", na, tpa);
 	  //if(na<-pi || na>pi){
 	  //na = (float)rand()/((float)RAND_MAX/(2*pi))-pi;
@@ -296,29 +295,29 @@ BicSpli::Manage(float fb[])
    ***/
   if(xx[inin].size()>1){
     Spline_interp *pushEffectManage = new Spline_interp(xx[inin],yy[inin]);
-    nat = mtci(pushEffectManage->interp(mtci(fb[0]+shift))-shift);
+    nat = mtci((pushEffectManage->interp(fb[0]))+shift2);
     double minXV = -pi;
     double maxXV = pi;
-    if(PosinX(mtci(fb[0]+shift))>0){
-      minXV=xx[inin][PosinX(mtci(fb[0]+shift))-1];
+    if(PosinX(fb[0])>0){
+      minXV=xx[inin][PosinX(fb[0])-1];
     }
-    else if(PosinX(mtci(fb[0]+shift))<xx[inin].size()){
-      maxXV=xx[inin].at(PosinX(mtci(fb[0]+shift)));
+    else if(PosinX(fb[0])<xx[inin].size()){
+      maxXV=xx[inin].at(PosinX(fb[0]));
     }
-    if(abs(nat-fb[1])>teM || ok[inin].at(PosinX(mtci(fb[0]+shift)))==false || fabs(maxXV-minXV)>pi/10){//Prediction wrong, time to learn
-      int t=PosinX(mtci(fb[0]+shift));
-      //if(abs(nat-fb[1])<=teM && ok[inin].at(PosinX(mtci(fb[0]+shift)))==true && fabs(maxXV-minXV)>pi/10){
+    if(abs(nat-fb[1])>teM || ok[inin].at(PosinX(fb[0]))==false || fabs(maxXV-minXV)>pi/10){//Prediction wrong, time to learn
+      int t=PosinX(fb[0]);
+      //if(abs(nat-fb[1])<=teM && ok[inin].at(PosinX(fb[0]))==true && fabs(maxXV-minXV)>pi/10){
       //printf("----------*'~-USEFULL-~'*----------\n");
       //}
       if(fb[1]>pi || fb[1]<-pi){
 	//printf("YY: %f, time: %i\n", fb[1], xx[inin].size());
       }
-      else if(mtci(fb[0]+shift)!=xx[inin][t]){
+      else if(fb[0]!=xx[inin][t]){
 	ok[inin].erase(ok[inin].begin()+t);
 	ok[inin].insert(ok[inin].begin()+t, true);
 	ok[inin].insert(ok[inin].begin()+t, true);
-	xx[inin].insert(xx[inin].begin()+t, mtci(fb[0]+shift));
-	yy[inin].insert(yy[inin].begin()+t, mtci(fb[1]+shift));
+	xx[inin].insert(xx[inin].begin()+t, fb[0]);
+	yy[inin].insert(yy[inin].begin()+t, fb[1]);
       }
       /*
       if(temPo.size()>0 && xx[inin].size()>1){//Remove the random points (used for initiation)
@@ -355,28 +354,28 @@ BicSpli::Manage(float fb[])
     ok[inin].erase(ok[inin].begin() + (ok[inin].size()-1));
     ok[inin].push_back(true);
     ok[inin].push_back(true);
-    xx[inin].push_back(mtci(fb[0]+shift));
-    yy[inin].push_back(mtci(fb[1]+shift));
+    xx[inin].push_back(fb[0]);
+    yy[inin].push_back(fb[1]);
     //firstM=false;
   }
-  else if(mtci(fb[0]+shift)!=xx[inin][0]){
+  else if(fb[0]!=xx[inin][0]){
     //temPo.push_back(fb[0]);
-    if(mtci(fb[0]+shift)<xx[inin][0]){
+    if(fb[0]<xx[inin][0]){
       //xx[inin].insert(0, fb[0]);
       //yy[inin].insert(0, fb[1]);
       ok[inin].erase(ok[inin].begin());
       ok[inin].insert(ok[inin].begin(), true);
       ok[inin].insert(ok[inin].begin(), true);
-      xx[inin].insert(xx[inin].begin(), mtci(fb[0]+shift));
-      yy[inin].insert(yy[inin].begin(), mtci(fb[1]+shift));
+      xx[inin].insert(xx[inin].begin(), fb[0]);
+      yy[inin].insert(yy[inin].begin(), fb[1]);
       //printf("Managed,fb<xx[inin], new first, in loop, %i!\n", xx[inin].size());
     }
     else{
       ok[inin].erase(ok[inin].begin() + (ok[inin].size()-1));
       ok[inin].push_back(true);
       ok[inin].push_back(true);
-      xx[inin].push_back(mtci(fb[0]+shift));
-      yy[inin].push_back(mtci(fb[1]+shift));
+      xx[inin].push_back(fb[0]);
+      yy[inin].push_back(fb[1]);
     }    
   }
   if(xx[inin].size()>0){
@@ -448,6 +447,7 @@ BicSpli::mtci(float angtch)
     return angtch;
     }
   */
+  //printf("In: %f, Out: %f\n", angtch, ((angtch/pi)-(int)(angtch/pi))*pi);
   return ((angtch/pi)-(int)(angtch/pi))*pi;
 }
 

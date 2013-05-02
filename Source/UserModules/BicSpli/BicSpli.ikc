@@ -12,59 +12,17 @@
 	/>
   </example>
 
-  <input 
-      name="TAPO" 
-      description="Target position (x,y)"
-      size="2"
-      />
+  <input name="TAPO" description="Target position (x,y)" size="2" />
+  <input name="PUPO" description="Position of pushable center (x,y)" size="2" />
+  <input name="PIN" description="Position of finger (a1, a2, a3, a4)" size="4" />
+  <input name="INDIR" description="Shape direction" size="1" />
+  <input name="ININ" description="Shape index" size="1" />
+  <input name="NORIN" description="Number of rotations" size="1" />
+  <!--input name="INPUT" description="Finger-to-object angle, finger-push angle, object-movement angle" size="2" /-->
 
-  <input 
-      name="PUPO" 
-      description="Position of pushable center (x,y)"
-      size="2"
-      />
-
-  <input 
-      name="PIN" 
-      description="Position of finger (a1, a2, a3, a4)"
-      size="4"
-      />
-
-  <input 
-      name="INDIR" 
-      description="Shape direction"
-      size="1"
-      />
-
-  <input 
-      name="ININ" 
-      description="Shape index"
-      size="1"
-      />
-
-  <output 
-      name="EL" 
-      description="Elevation of finger"
-      size="1"
-      />
-
-  <output 
-      name="NNS" 
-      description="Need new shape?"
-      size="1"
-      />
-
-  <output 
-      name="NPO" 
-      description="New finger position (x,y)"
-      size="2"
-      />
-
-  <!--input 
-      name="INPUT" 
-      description="Finger-to-object angle, finger-push angle, object-movement angle" 
-      size="2"
-      /-->
+  <output name="EL" description="Elevation of finger" size="1" />
+  <output name="NNS" description="Need new shape?" size="1" />
+  <output name="NPO" description="New finger position (x,y)" size="2" />
 
   <parameter name="ABCX" type="float" default="0.5f" min="0" max="1.0" description="Arm base coordinate (x)." />
   <parameter name="ABCY" type="float" default="1.f" min="0" max="1.0" description="Arm base coordinate (y)." />
