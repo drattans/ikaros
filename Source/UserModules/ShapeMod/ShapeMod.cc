@@ -17,7 +17,7 @@ ShapeMod::Init()
   //imine=GetInputMatrix("INIME");//Edge, not in use yet
   //siX=GetInputSizeX("INIMC");//Should be 100
   //siY=GetInputSizeY("INIMC");//Should be 100
-  nodl = GetFloatValue("NODL", 1);//Number of dilation loops
+  nodl = GetFloatValue("NODL", 1);//Number of dilation loops  
   norou = GetOutputArray("NOROU");
   siX=100;
   siY=100;
