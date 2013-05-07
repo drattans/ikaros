@@ -59,18 +59,21 @@ BicSpli::Init()
   yy.push_back(yy1);
   ok.push_back(ok1);
   rota = 2*pi/noR;
+  ercou = 0;//Error counter
+  ercouli = 5;//Errors before new shape is needed
 }
 
 void
 BicSpli::Tick()
 {
+  //inin+=1;//If [0] is prototype, needs to be implemented first
   noR = (int)norin[0];
   rota = 2*pi/noR;
   nns[0] = 0.f;
   inin = (int)ininf[0];
   shift2 = indir[0]*rota;
   //printf("Nor: %i, Rot: %f, In: %f\n", noR, rota, indir[0]);
-  //shift2 = 0;
+  //shift2 = pi;
   tapo[0] = tapo[0] - abcx;
   tapo[1] = abcy - tapo[1];
   pupo[0] = pupo[0] - abcx;
@@ -276,6 +279,12 @@ BicSpli::Tick()
       el[0] = -40.f;//-40.f
     }
   }
+
+  //Need new shape?
+  if(ercou>ercouli){
+    ercou=0;
+    NSH();
+  }
 }
 
 /************************************************************************************************
@@ -467,9 +476,9 @@ void
 BicSpli::NSH()
 {
   nns[0] = 1.f;
-  vector<double> xx1;
-  vector<double> yy1;
-  vector<bool> ok1;
+  vector<double> xx1=xx[0];
+  vector<double> yy1=yy[0];
+  vector<bool> ok1=ok[0];
   ok1.push_back(true);
   xx.push_back(xx1);
   yy.push_back(yy1);

@@ -47,6 +47,8 @@ class BicSpli: public Module
   int tlc2;
   int tlcm;
   int inin;
+  int ercou;
+  int ercouli;
 
   bool just;
   bool first;
