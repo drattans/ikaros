@@ -57,6 +57,7 @@ class BicSpli: public Module
   bool ddone;//Finished recently?
   bool initi;//Push initialised
   bool firstM;
+  bool protact;
 
   vector<VecDoub> xx;
   vector<VecDoub> yy;
@@ -75,7 +76,7 @@ class BicSpli: public Module
 
   float mtci(float angtch);
 
-  int PosinX(float a);
+  int PosinX(float a, int b);
 };
 
 #endif

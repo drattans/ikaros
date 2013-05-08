@@ -58,6 +58,16 @@ BicSpli::Init()
   xx.push_back(xx1);
   yy.push_back(yy1);
   ok.push_back(ok1);
+  protact=true;
+  if(protact){//If 0 is prototype
+    vector<double> xx2;
+    vector<double> yy2;
+    vector<bool> ok2;
+    ok2.push_back(true);
+    xx.push_back(xx2);
+    yy.push_back(yy2);
+    ok.push_back(ok2);
+  }
   rota = 2*pi/noR;
   ercou = 0;//Error counter
   ercouli = 5;//Errors before new shape is needed
@@ -66,11 +76,13 @@ BicSpli::Init()
 void
 BicSpli::Tick()
 {
-  //inin+=1;//If [0] is prototype, needs to be implemented first
   noR = (int)norin[0];
   rota = 2*pi/noR;
   nns[0] = 0.f;
   inin = (int)ininf[0];
+  if(protact){//If 0 is prototype
+    inin+=1;
+  }
   shift2 = indir[0]*rota;
   //printf("Nor: %i, Rot: %f, In: %f\n", noR, rota, indir[0]);
   //shift2 = pi;
@@ -108,7 +120,7 @@ BicSpli::Tick()
       fb[1] = na;//Attack angle
       fb[0] = mtci(fb[0]+shift2);
       if(abs(tpao-fb[0])>pi/10.f){//If result diveerges too much from anticipation
-	int ttt=PosinX(tpao);
+	int ttt=PosinX(tpao, inin);
 	if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
 	  printf("Helped\n");
 	}
@@ -147,7 +159,7 @@ BicSpli::Tick()
      ***/
     if(ddone==true){
       ddone = false;
-      int t=PosinX(tpa);
+      int t=PosinX(tpa, inin);
       if(ok[inin].at(t) && xx[inin].size()>1){
 	printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	Spline_interp *pushEffect = new Spline_interp(xx[inin],yy[inin]);
@@ -192,7 +204,7 @@ BicSpli::Tick()
 	fb[1] = na;//Attack angle
 	fb[0] = mtci(fb[0]+shift2);
 	if(abs(tpao-fb[0])>pi/10.f){
-	  int ttt=PosinX(tpao);
+	  int ttt=PosinX(tpao, inin);
 	  if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
 	    printf("Helped\n");
 	  }
@@ -201,7 +213,7 @@ BicSpli::Tick()
 	  }
 	}
 	Manage(fb);
-	int t=PosinX(tpa);
+	int t=PosinX(tpa, inin);
 	if(ok[inin].at(t) && xx[inin].size()>1){
 	  printf("Knw!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	  Spline_interp *pushEffect = new Spline_interp(xx[inin],yy[inin]);
@@ -307,15 +319,15 @@ BicSpli::Manage(float fb[])
     nat = mtci((pushEffectManage->interp(fb[0]))+shift2);
     double minXV = -pi;
     double maxXV = pi;
-    if(PosinX(fb[0])>0){
-      minXV=xx[inin][PosinX(fb[0])-1];
+    if(PosinX(fb[0], inin)>0){
+      minXV=xx[inin][PosinX(fb[0], inin)-1];
     }
-    else if(PosinX(fb[0])<xx[inin].size()){
-      maxXV=xx[inin].at(PosinX(fb[0]));
+    else if(PosinX(fb[0], inin)<xx[inin].size()){
+      maxXV=xx[inin].at(PosinX(fb[0], inin));
     }
-    if(abs(nat-fb[1])>teM || ok[inin].at(PosinX(fb[0]))==false || fabs(maxXV-minXV)>pi/10){//Prediction wrong, time to learn
-      int t=PosinX(fb[0]);
-      //if(abs(nat-fb[1])<=teM && ok[inin].at(PosinX(fb[0]))==true && fabs(maxXV-minXV)>pi/10){
+    if(abs(nat-fb[1])>teM || ok[inin].at(PosinX(fb[0], inin))==false || fabs(maxXV-minXV)>pi/10){//Prediction wrong, time to learn
+      int t=PosinX(fb[0], inin);
+      //if(abs(nat-fb[1])<=teM && ok[inin].at(PosinX(fb[0], inin))==true && fabs(maxXV-minXV)>pi/10){
       //printf("----------*'~-USEFULL-~'*----------\n");
       //}
       if(fb[1]>pi || fb[1]<-pi){
@@ -402,7 +414,7 @@ BicSpli::Manage(float fb[])
       kel.open ("generatedF.txt");
       for(float fl=-pi; fl<pi; fl+=0.1){
 	gtp << fl << " " << pushEffectManage->interp(fl) << "\n";
-	int ttt=PosinX(fl);
+	int ttt=PosinX(fl, inin);
 	if(!ok[inin].at(ttt)){
 	  kel << fl << " " << pushEffectManage->interp(fl) << "\n";
 	}
@@ -413,6 +425,39 @@ BicSpli::Manage(float fb[])
     }
   }
   printf("Knowledge: %i\n-----------------------------------------------------\n", xx[inin].size());
+  if(protact){//If 0 is prototype
+    int prc=0;
+    for(int pri=1; pri<xx.size(); ++pri){
+      if(xx[pri].size()>1){
+	Spline_interp *pushEffectManage = new Spline_interp(xx[pri],yy[pri]);
+	nat = mtci((pushEffectManage->interp(fb[0]))+shift2);
+	if(abs(nat-fb[1])<teM){//Prediction right
+	  ++prc;
+	}
+	delete pushEffectManage;
+      }
+    }
+    if((prc/(xx.size()-1))>0.8){//If it's a good point in at least 80% of the cases...
+      int t=PosinX(fb[0], 0);
+      if(fb[1]>pi || fb[1]<-pi){
+	//printf("YY: %f, time: %i\n", fb[1], xx[inin].size());
+      }
+      else if(xx[0].size()==0){
+	ok[0].erase(ok[0].begin()+t);
+	ok[0].insert(ok[0].begin()+t, true);
+	ok[0].insert(ok[0].begin()+t, true);
+	xx[0].insert(xx[0].begin()+t, fb[0]);
+	yy[0].insert(yy[0].begin()+t, fb[1]);
+      }
+      else if(fb[0]!=xx[0][t]){
+	ok[0].erase(ok[0].begin()+t);
+	ok[0].insert(ok[0].begin()+t, true);
+	ok[0].insert(ok[0].begin()+t, true);
+	xx[0].insert(xx[0].begin()+t, fb[0]);
+	yy[0].insert(yy[0].begin()+t, fb[1]);
+      }
+    }
+  }
   /*
     if(pruning condition){
     int oi;
@@ -461,10 +506,10 @@ BicSpli::mtci(float angtch)
 }
 
 int
-BicSpli::PosinX(float a){
-  int t=xx[inin].size();
-  for(int i=0; i<xx[inin].size(); ++i){
-    if(a<xx[inin][i]){
+BicSpli::PosinX(float a, int b){
+  int t=xx[b].size();
+  for(int i=0; i<xx[b].size(); ++i){
+    if(a<xx[b][i]){
       t=i;
       break;
     }
@@ -479,7 +524,6 @@ BicSpli::NSH()
   vector<double> xx1=xx[0];
   vector<double> yy1=yy[0];
   vector<bool> ok1=ok[0];
-  ok1.push_back(true);
   xx.push_back(xx1);
   yy.push_back(yy1);
   ok.push_back(ok1);
