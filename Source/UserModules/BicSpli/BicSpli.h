@@ -15,6 +15,7 @@ class BicSpli: public Module
   static Module * Create(Parameter * p) { return new BicSpli(p); }
 
   float * tapo;
+  float * tapot;
   float * pupo;
   float * pin;
   float * indir;
@@ -41,6 +42,7 @@ class BicSpli: public Module
   float pi;
   float rota;
   float shift2;
+  float shift3;
 
   int noR;
   int tlc;
@@ -74,6 +76,8 @@ class BicSpli: public Module
   void Manage(float fb[]);
   void ATC(float *aip);
 
+  float findTA(float fbd);
+  float findTPA(float fbd);
   float mtci(float angtch);
 
   int PosinX(float a, int b);

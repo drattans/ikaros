@@ -15,6 +15,10 @@ struct Spline_interp{
       ki = (yv.at(i+1)-yv.at(i))/(xv.at(i+1)-xv.at(i));
       k.push_back(ki);
     }
+    //*
+    ki = (yv.at(yv.size()-1)-yv.at(0))/(-xv.at(0)-6.2831853+xv.at(xv.size()-1));
+    k.push_back(ki);
+    //*/
     xxI=xv;
     yyI=yv;
   }
@@ -29,10 +33,12 @@ struct Spline_interp{
       }
     }
     if(t<0){
-      ret = yyI.at(0) - k.at(0)*(xxI.at(0)-x);
+      //ret = yyI.at(0) - k.at(0)*(xxI.at(0)-x);
+      ret = yyI.at(0) - k.at(k.size()-1)*(xxI.at(0)-x);
     }
     else if(t==xxI.size()-1){
-      ret = yyI.at(t) + k.at(t-1)*(x-xxI.at(t));
+      //ret = yyI.at(t) + k.at(t-1)*(x-xxI.at(t));
+      ret = yyI.at(t) + k.at(k.size()-1)*(x-xxI.at(t));
     }
     else{
       ret = yyI.at(t) + k.at(t)*(x-xxI.at(t));

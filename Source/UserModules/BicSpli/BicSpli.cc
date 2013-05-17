@@ -20,7 +20,7 @@ BicSpli::Init()
   npo = GetOutputArray("NPO");//New finger position (x,y)
   el = GetOutputArray("EL");//Elevation of finger
   nns = GetOutputArray("NNS");//Need new shape?
-  norin = GetInputArray("NORIN");
+  norin = GetInputArray("NORIN");//Informationon number of rotations
   abcx = GetFloatValue("ABCX", 0.5f);//Arm base coordinate (x)
   abcy = GetFloatValue("ABCY", 1.f);//Arm base coordinate (y)
   noR = (int)norin[0];
@@ -39,6 +39,7 @@ BicSpli::Init()
   ddone = false;//Finished recently?
   initi = false;//Push initialised
   firstM = true;
+  tapot = new float[2];
   fipo = new float[2];
   fbo = new float[2];
   fb = new float[2];
@@ -83,13 +84,17 @@ BicSpli::Tick()
   if(protact){//If 0 is prototype
     inin+=1;
   }
-  shift2 = indir[0]*rota;
+  //shift2 = indir[0]*rota;
   //printf("Nor: %i, Rot: %f, In: %f\n", noR, rota, indir[0]);
-  //shift2 = pi;
-  tapo[0] = tapo[0] - abcx;
-  tapo[1] = abcy - tapo[1];
+  shift2 = 0;
+  //shift3 = indir[0]*rota;
+  shift3 = 0;
+  tapot[0] = tapo[0] - abcx;//actual position before rotation
+  tapot[1] = abcy - tapo[1];//actual position before rotation
   pupo[0] = pupo[0] - abcx;
   pupo[1] = abcy - pupo[1];
+  tapo[0] = ((tapot[0] - pupo[0])*cos(shift3) - (tapot[1] - pupo[1])*sin(shift3)) + pupo[0];//Rotation
+  tapo[1] = ((tapot[0] - pupo[0])*sin(shift3) + (tapot[1] - pupo[1])*cos(shift3)) + pupo[1];//Rotation
   float tpd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));//Target-pushable distance
   if(tpd < 0.03f){//If at goal
     //printf("Error (tpd): %f\n", tpd);
@@ -111,14 +116,14 @@ BicSpli::Tick()
       if(fbd == 0){
 	printf("Did not move (tpd): %f\n", fbd);
       }
-      else if((pupoo[1]-pupo[1]) > 0){
-	fb[0] = -acos((pupoo[0]-pupo[0])/fbd);
-      }
-      else{
-	fb[0] = -acos(-(pupoo[0]-pupo[0])/fbd) + pi;
-      }
+      //else if((pupoo[1]-pupo[1]) > 0){
+      //fb[0] = -acos((pupoo[0]-pupo[0])/fbd);
+      //}
+      //else{
+      //fb[0] = -acos(-(pupoo[0]-pupo[0])/fbd) + pi;
+      //}
       fb[1] = na;//Attack angle
-      fb[0] = mtci(fb[0]+shift2);
+      fb[0] = mtci(findTA(fbd)+shift2);
       if(abs(tpao-fb[0])>pi/10.f){//If result diveerges too much from anticipation
 	int ttt=PosinX(tpao, inin);
 	if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
@@ -132,12 +137,24 @@ BicSpli::Tick()
     }
     //*/
   }
+  /*
   else if((pupo[1]-tapo[1]) > 0){
     tpa = mtci(acos(-(pupo[0]-tapo[0])/tpd)-pi+shift2);
   }
   else{
     tpa = mtci(acos((pupo[0]-tapo[0])/tpd)+shift2);
   }
+  ///
+  else if((pupo[0]-tapo[0]) > 0){
+    tpa = mtci(acos((pupo[1]-tapo[1])/tpd)+shift2);
+    //printf("Tpa: %f!\n", tpa);
+  }
+  else{
+    tpa = mtci(-acos((pupo[1]-tapo[1])/tpd)+shift2);
+    //printf("Tpa: %f?\n", tpa);
+  }
+  */
+  tpa = findTPA(tpd);
   if(tpa<-pi || tpa>pi){
     printf("Error (tpa): %f\n", tpa);
   }
@@ -195,14 +212,16 @@ BicSpli::Tick()
 	if(fbd == 0){
 	  printf("Did not move (tpd): %f\n", fbd);
 	}
+	/*
 	else if((pupoo[1]-pupo[1]) > 0){
 	  fb[0] = - acos((pupoo[0]-pupo[0])/fbd);
 	}
 	else{
 	  fb[0] = - acos(-(pupoo[0]-pupo[0])/fbd) + pi;
 	}
+	*/
 	fb[1] = na;//Attack angle
-	fb[0] = mtci(fb[0]+shift2);
+	fb[0] = mtci(findTA(fbd)+shift2);
 	if(abs(tpao-fb[0])>pi/10.f){
 	  int ttt=PosinX(tpao, inin);
 	  if((tpao>0.9f*pi && fb[0]<-0.9f*pi) || (fb[0]>0.9f*pi && tpao<-0.9f*pi)){
@@ -240,8 +259,10 @@ BicSpli::Tick()
       pmode = false;
       float ar1 = abs(npoo[0]-fipo[0]);//Distance to x
       float ar2 = abs(npoo[1]-fipo[1]);//Distance to y
-      float f1 = ((radious*cos(na))/(2.f*h*tan(28.5*pi/180.f)));//Attack position, origo in pushable
-      float f2 = ((radious*sin(na))/(2.f*h*tan(21.5*pi/180.f)));//Attack position, origo in pushable
+      float f1t = ((radious*cos(na))/(2.f*h*tan(28.5*pi/180.f)));//Attack position, origo in pushable
+      float f2t = ((radious*sin(na))/(2.f*h*tan(21.5*pi/180.f)));//Attack position, origo in pushable
+      float f1=f1t*cos(shift3)+f2t*sin(shift3);
+      float f2=-f1t*sin(shift3)+f2t*cos(shift3);
       npo[0] = pupo[0] - f1 + abcx;//Attack position
       npo[1] = abcy - pupo[1] + f2;//Attack position
       npoo[0] = (npo[0] - abcx)*(2.f*h*tan(28.5*pi/180.f));
@@ -258,8 +279,10 @@ BicSpli::Tick()
       }
       else{
 	tlc2=tlcm;
-	float f1 = (((radious-pl)*cos(na))/(2*h*tan(28.5*pi/180)));//Finger target, origo in pushable
-	float f2 = (((radious-pl)*sin(na))/(2*h*tan(21.5*pi/180)));//Finger target, origo in pushable
+	float f1t = (((radious-pl)*cos(na))/(2*h*tan(28.5*pi/180)));//Finger target, origo in pushable
+	float f2t = (((radious-pl)*sin(na))/(2*h*tan(21.5*pi/180)));//Finger target, origo in pushable
+	float f1=f1t*cos(shift3)+f2t*sin(shift3);
+	float f2=-f1t*sin(shift3)+f2t*cos(shift3);
 	tg[0] = pupo[0] - f1 + abcx;//Finger target
 	tg[1] = abcy - pupo[1] - f2;//Finger target
 	npo[0] = tg[0];
@@ -502,7 +525,15 @@ BicSpli::mtci(float angtch)
     }
   */
   //printf("In: %f, Out: %f\n", angtch, ((angtch/pi)-(int)(angtch/pi))*pi);
-  return ((angtch/pi)-(int)(angtch/pi))*pi;
+  if((int)(angtch/pi) % 2 == 0){
+    return ((angtch/pi)-(int)(angtch/pi))*pi;
+  }
+  else if(angtch>0){
+    return ((angtch/pi)-(int)(angtch/pi)-1)*pi;
+  }
+  else{
+    return ((angtch/pi)-(int)(angtch/pi)+1)*pi;
+  }
 }
 
 int
@@ -529,6 +560,45 @@ BicSpli::NSH()
   ok.push_back(ok1);
 }
 
+float
+BicSpli::findTA(float fbd)
+{
+  if((pupoo[0]-pupo[0]) > 0){
+    return acos((pupoo[1]-pupo[1])/fbd);//+pi/2;
+  }
+  else{
+    return -(acos((pupoo[1]-pupo[1])/fbd));//+pi/2);
+  }
+}
+
+float
+BicSpli::findTPA(float fbd)
+{
+  if((pupo[0]-tapo[0]) > 0){
+    return acos((pupo[1]-tapo[1])/fbd);//+pi/2;
+  }
+  else{
+    return -(acos((pupo[1]-tapo[1])/fbd));//+pi/2);
+  }
+}
+/*
+  if(fbd == 0){
+  printf("Did not move (tpd): %f\n", fbd);
+  }
+  else if((pupoo[1]-pupo[1]) > 0){
+  fb[0] = -acos((pupoo[0]-pupo[0])/fbd);
+  }
+  else{
+  fb[0] = -acos(-(pupoo[0]-pupo[0])/fbd) + pi;
+  }
+
+  else if((pupo[1]-tapo[1]) > 0){
+  tpa = mtci(acos(-(pupo[0]-tapo[0])/tpd)-pi+shift2);
+  }
+  else{
+  tpa = mtci(acos((pupo[0]-tapo[0])/tpd)+shift2);
+  }
+*/
 BicSpli::~BicSpli() 
 {
   delete npoo;
