@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<group name="Spliner" description="...">
+
+  <description type="text">
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="Spliner"
+	name="Spliner"
+	/>
+  </example>
+
+  <input name="GOAL_POSITION" description="Target position (x,y)" size="2" />
+  <input name="PUSHABLE_DATA" description="Position of pushable center (x,y), and more" size="6" />
+  <input name="MACHINE_INFO" description="Information about hardware" size="16" />
+
+  <output name="NEED_NEW_SHAPE" description="Need new shape?" size="1" />
+  <output name="NEW_FINGER_INSTRUCTIONS" description="New finger position (x,y)" size="3" />
+
+  <module class="Spliner" />
+
+  <author>
+    <name>Erik Lagerstedt</name>
+  </author>
+
+  <files>
+    <file>Spliner.h</file>
+    <file>Spliner.cc</file>
+    <file>Spliner.ikc</file>
+  </files>
+
+</group>
+

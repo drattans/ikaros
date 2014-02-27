@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<group name="ImageTrimmer" description="">
+  
+  <description type="text">
+  </description>
+  
+  <example description="A simple example">
+    <module
+       class="ImageTrimmer"
+       name="ImageTrimmer"
+       />
+  </example>
+  
+  <module class="ImageTrimmer" />
+
+  <input name="INPUT_IMAGE" description="Input image" size_x="100" size_y="100"/>
+  <input name="INPUT_CENTERS" description="Input centers" size_x="1" size_y="2"/>
+
+  <output name="OUTPUT_IMAGE" description="Output image" size_x="100" size_y="100"/>
+  
+  <parameter name="NUMBER_OF_CLUSTERS" type="int" default="1" min="0" max="20" description="Number of clusters" />
+
+  <author>
+    <name>Erik Lagerstedt</name>
+  </author>
+  
+  <files>
+    <file>ImageTrimmer.h</file>
+    <file>ImageTrimmer.cc</file>
+    <file>ImageTrimmer.ikc</file>
+  </files>
+  
+</group>
+

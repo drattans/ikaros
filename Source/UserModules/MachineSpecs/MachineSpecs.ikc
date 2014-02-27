@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<group name="MachineSpecs" description="Specs for the hardware">
+
+  <description type="text">
+    This module contains information on the size, location, etc of the physical machine. It takes position of servos as input (and might take some state indication as input in the future). It would be trivial to implement feedback, which could change the size constants. This way the robot could adapt to a new body, or learn to inprove the control of the current one.
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="MachineSpecs"
+	name="MachineSpecs"
+	/>
+  </example>
+
+  <input name="JOINT_POSITION" description="Feedback from the joints of the arm" size="4"/>
+
+  <!-- The elements in the vector are:  /-->
+  <output name="MACHINE_INFO" description="Information on the size, location, etc of the physical machine." size="16"/>
+
+  <module class="MachineSpecs" />
+
+  <author>
+    <name>Erik Lagerstedt</name>
+  </author>
+
+  <files>
+    <file>MachineSpecs.h</file>
+    <file>MachineSpecs.cc</file>
+    <file>MachineSpecs.ikc</file>
+  </files>
+
+</group>
+

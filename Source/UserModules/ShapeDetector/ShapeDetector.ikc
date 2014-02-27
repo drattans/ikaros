@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<group name="ShapeDetector" description="">
+  
+  <description type="text">
+    
+  </description>
+  
+  <example description="A simple example">
+    <module
+       class="ShapeDetector"
+       name="ShapeDetector"
+       />
+  </example>
+  
+  <module class="ShapeDetector" />
+
+  <input name="INPUT_IMAGE" description="Input image" size_x="100" size_y="100"/>
+  <input name="INPUT_CENTERS" description="Coordinates of centres" size_x="1" size_y="2"/>
+
+  <parameter name="DILATION_LOOPS" type="int" default="1" min="0" max="20" description="Number of dilation loops" />
+  <parameter name="NUMBER_OF_ROTATIONS" type="int" default="1" min="0" max="20" description="Number of rotations" />
+  <parameter name="NUMBER_OF_IMAGES" type="int" default="1" min="0" max="20" description="Number of images" />
+
+  <parameter name="NEED_TO_LEARN" type="bool" default="yes" description="Need to learn new shape" />
+
+  <output name="OUTPUT_IMAGE" description="Output image" size_x="150" size_y="150"/>
+  <output name="IMAGE_META_DATA" description="Everything to know about the shape" size="6"/>
+
+  <author>
+    <name>Erik Lagerstedt</name>
+  </author>
+  
+  <files>
+    <file>ShapeDetector.h</file>
+    <file>ShapeDetector.cc</file>
+    <file>ShapeDetector.ikc</file>
+  </files>
+  
+</group>
+

@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<group name="ServoInstructor" description="Coordinat transformation">
+
+  <description type="text">
+    This module is used to transform different kinds of coordinates to the angels of the servo motors.
+  </description>
+
+  <example description="A simple example">
+    <module
+	class="ServoInstructor"
+	name="ServoInstructor"
+	/>
+  </example>
+
+  <input 
+      name="MACHINE_INFO" 
+      description="All you need to know about the hardware" 
+      size="16"
+      />
+  
+  <input 
+      name="NEW_FINGER_INSTRUCTIONS" 
+      description="The coordinates for the finger to go (x,y,z)" 
+      size="3"
+      />
+
+  <input 
+      name="SERVO_PRESENT" 
+      description="Present positions of servos"
+      size="4"
+      />
+
+  <output 
+      name="CARTESIAN_OUTPUT" 
+      description="Cartesian coordinates (x,y)" 
+      size="2"
+      />
+
+  <output 
+      name="SERVO_NEXT" 
+      description="Angles for the servos (degrees)" 
+      size="4" 
+      />
+
+  <parameter name="SMOOTH" type="bool" default="yes" description="Makes the movement smooth" />
+  <parameter name="SEGMENT_LENGTH" type="float" default="10.f" min="0.2f" max="1000.f" description="Length of move segment in mm." />
+
+  <module class="ServoInstructor" />
+
+  <author>
+    <name>Erik Lagerstedt</name>
+  </author>
+
+  <files>
+    <file>ServoInstructor.h</file>
+    <file>ServoInstructor.cc</file>
+    <file>ServoInstructor.ikc</file>
+  </files>
+
+</group>
+
