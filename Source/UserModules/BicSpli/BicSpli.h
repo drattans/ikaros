@@ -44,6 +44,7 @@ class BicSpli: public Module
   float shift2;
   float shift3;
 
+  int tco;
   int noR;
   int tlc;
   int tlc2;

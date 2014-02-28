@@ -25,6 +25,7 @@
 #define ShapeDetector_
 
 #include "IKAROS.h"
+#include <vector>
 
 class ShapeDetector: public Module
 {
@@ -45,8 +46,11 @@ class ShapeDetector: public Module
   int numberOfRotations;
   float sizeXLarge;
   float sizeYLarge;
-  float pi;
+  float shapeRadius;
+  //float pi;
   bool needToLearn;
+
+  std::vector<std::vector<std::vector<std::vector<float>>>> referenceShapes; 
 
  ShapeDetector(Parameter * p) : Module(p) {}
   virtual ~ShapeDetector() {}

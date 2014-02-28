@@ -31,6 +31,7 @@ public:
     float * shapeIn;
     float * shapeDir;
 
+    //std::vector<std::vector<bool>> goDi;
     std::vector<std::vector<float>> shape;
     std::vector<std::vector<std::vector<std::vector<float>>>> proSh; 
 

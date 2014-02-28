@@ -57,7 +57,7 @@ MachineSpecs::Init()
   mspec[15] = 0.f;//Finger position, y (fraction of image)*
   //mspec[16] = 0.f;//Finger position, z (mm) (two states)
 
-  pi = atan(1.f)*4.f;//Pi
+  //pi = atan(1.f)*4.f;//Pi
 }
 
 

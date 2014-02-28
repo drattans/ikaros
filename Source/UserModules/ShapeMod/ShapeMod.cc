@@ -391,6 +391,30 @@ ShapeMod::makeShape()
     siv.push_back(si);
   }
   proSh.push_back(siv);
+  /*
+  vector<bool> teGoDi;
+  teGoDi.push_back(true);
+  ofstream shds;
+  shds.open ("shapeDirStuff.txt");
+  if(noR>1){
+    for(int ro=0; ro<noR-1; ++ro){//From every image
+      for(int sp=ro+1; sp<noR; ++sp){//To every image
+	int count=0;
+	for(int md=0; md<150; ++md){
+	  for(int nd=0; nd<150; ++nd){
+	    if(proSh[proSh.size()-1][ro][md][nd]==proSh[proSh.size()-1][sp][md][nd]){
+	      ++count;
+	    }
+	  }
+	}
+	shds << ro << "\t" << sp << "\t" << ((float)count/22500) << "\n";
+	//printf("(%i->%i): %i\n", ro, sp, count);
+	printf("(%i->%i): %f\n", ro, sp, (float)count/22500);
+      }
+    }
+  shds.close();
+  }
+  */
   //printShape();//When a new shape is created, the shapes are printed to a file for inspection
 }
 

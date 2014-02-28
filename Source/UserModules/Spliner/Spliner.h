@@ -50,15 +50,23 @@ class Spliner: public Module
   float * temporaryGoal;
 
   float pi;
+  float shift2;
+  float shift3;
   float pushMarginal;
   float newPushAngle;
   float rotationAngle;
+  float toleratedError;
+  float angleToGoal;
+  float oldAngleToGoal;
 
+
+  int h;
   int ticLagg;
   int ticLaggCounter;
   int ticLaggCounter2;
   int shapeErrors;
   int toleratedShapeErrors;
+  int shapeIndex;
 
   bool justFoundNewAngle;
   bool differentSuccess;
@@ -73,7 +81,7 @@ class Spliner: public Module
   vector<vector<bool>> ok;
 
  Spliner(Parameter * p) : Module(p) {}
-  virtual ~Spliner() {}
+  virtual ~Spliner();
 
   int pointInPhaseSpace(float a, int b);
 

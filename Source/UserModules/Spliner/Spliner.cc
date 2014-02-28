@@ -81,7 +81,7 @@ Spliner::Init()
     oldPushableData[5] = 0.f;// PushableData of the last tick, radius
   }
   //pupoo = new float[2];
-  int shapeIndex=0;
+  shapeIndex=0;
   justFoundNewAngle = false;//(just)
   differentSuccess = false;
   pushMode = false;//Push mode(pmode)
@@ -95,7 +95,7 @@ Spliner::Init()
   temporaryGoal = new float[2];//Temporary goal (tg)
   //radious = 30.f;//Good if it could find this by itself, but can be put to >21 for the time being
   pushMarginal=5.f;//Added to the radius of pushable when pushing
-  pushLength=PushableData[5];//now=radius of pushable 35.f;//Push length
+  //pushLength=pushableData[5];//now=radius of pushable 35.f;//Push length
   toleratedError = 5.f;//Tolerated error when evaluating if its done(te)
   ticLagg = 5;//Tic-lagg-counter max(tlcm)
   ticLaggCounter = ticLagg;//Tic-lagg-counter(tlc)
@@ -118,7 +118,7 @@ Spliner::Init()
     yy.push_back(yy2);//<=
     ok.push_back(ok2);//<=
   }//////////////////////////////////////////////////////
-  rotationAngle = 2*pi/PushableData[4];//The size of a rotation. Division with zero?//<=
+  rotationAngle = 2*pi/pushableData[4];//The size of a rotation. Division with zero?//<=
   shapeErrors = 0;//Error counter
   toleratedShapeErrors = 5;//Errors before new shape is needed
 }
@@ -131,7 +131,7 @@ Spliner::Tick()
   /////////////////
 
   rotationAngle = 2*pi/pushableData[4];
-  NeedNewShape[0] = 0.f;
+  needNewShape[0] = 0.f;
   shapeIndex=(int)pushableData[0];
   //inin = (int)ininf[0];//pushableData[0];
   //if(protact){//If 0 is prototype////////////////////////
@@ -143,9 +143,9 @@ Spliner::Tick()
   tapot[1] = mspec[1] - goalPosition[1];//actual position before rotation
   pushableData[2] = pushableData[2] - mspec[0];
   pushableData[3] = mspec[1] - pushableData[3];
-  tapo[0] = ((tapot[0] - pushableData[2])*cos(shift3) - (tapot[1] - pushableData[3])*sin(shift3)) + pushableData[2];//Rotation
-  tapo[1] = ((tapot[0] - pushableData[2])*sin(shift3) + (tapot[1] - pushableData[3])*cos(shift3)) + pushableData[3];//Rotation
-  float distanceToGoal = sqrt(pow((pushableData[2]-tapo[0]), 2) + pow((pushableData[3]-tapo[1]),2));//Target-pushable distance
+  goalPosition[0] = ((tapot[0] - pushableData[2])*cos(shift3) - (tapot[1] - pushableData[3])*sin(shift3)) + pushableData[2];//Rotation
+  goalPosition[1] = ((tapot[0] - pushableData[2])*sin(shift3) + (tapot[1] - pushableData[3])*cos(shift3)) + pushableData[3];//Rotation
+  float distanceToGoal = sqrt(pow((pushableData[2]-goalPosition[0]), 2) + pow((pushableData[3]-goalPosition[1]),2));//Target-pushable distance
 
     //////////////////
    //  If at goal  //************************
@@ -266,8 +266,8 @@ Spliner::Tick()
       pushMode = false;
       //float ar1 = abs(oldFingerInstructions[0]-cartesianFingerPosition[0]);//Distance to x
       //float ar2 = abs(oldFingerInstructions[1]-cartesianFingerPosition[1]);//Distance to y
-      float temporaryAngleRelativePushable1 = ((radious*cos(newPushAngle))/(2.f*h*tan(28.5*pi/180.f)));//Attack position, origo in pushable
-      float temporaryAngleRelativePushable2 = ((radious*sin(newPushAngle))/(2.f*h*tan(21.5*pi/180.f)));//Attack position, origo in pushable
+      float temporaryAngleRelativePushable1 = ((pushableData[5]*cos(newPushAngle))/(2.f*h*tan(28.5*pi/180.f)));//Attack position, origo in pushable
+      float temporaryAngleRelativePushable2 = ((pushableData[5]*sin(newPushAngle))/(2.f*h*tan(21.5*pi/180.f)));//Attack position, origo in pushable
       float angleRelativePushable1=temporaryAngleRelativePushable1*cos(shift3)+temporaryAngleRelativePushable2*sin(shift3);
       float angleRelativePushable2=-temporaryAngleRelativePushable1*sin(shift3)+temporaryAngleRelativePushable2*cos(shift3);
       newFingerInstructions[0] = pushableData[0] - angleRelativePushable1 + mspec[0];//Attack position
@@ -286,8 +286,8 @@ Spliner::Tick()
       }
       else{
 	ticLaggCounter2=ticLagg;
-	float temporaryAngleRelativePushable1 = (((radious-pl)*cos(newPushAngle))/(2*h*tan(28.5*pi/180)));//Finger target, origo in pushable
-	float temporaryAngleRelativePushable2 = (((radious-pl)*sin(newPushAngle))/(2*h*tan(21.5*pi/180)));//Finger target, origo in pushable
+	float temporaryAngleRelativePushable1 = (((pushableData[5]-pushableData[5])*cos(newPushAngle))/(2*h*tan(28.5*pi/180)));//Finger target, origo in pushable
+	float temporaryAngleRelativePushable2 = (((pushableData[5]-pushableData[5])*sin(newPushAngle))/(2*h*tan(21.5*pi/180)));//Finger target, origo in pushable
 	float angleRelativePushable1=temporaryAngleRelativePushable1*cos(shift3)+temporaryAngleRelativePushable2*sin(shift3);
 	float angleRelativePushable2=-temporaryAngleRelativePushable1*sin(shift3)+temporaryAngleRelativePushable2*cos(shift3);
 	temporaryGoal[0] = pushableData[0] - angleRelativePushable1 + mspec[0];//Finger target

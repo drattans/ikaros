@@ -44,8 +44,8 @@ BicSpli::Init()
   fbo = new float[2];
   fb = new float[2];
   tg = new float[2];//Temporary goal
-  radious = 30.f;//Good if it could find this by itself, but can be put to >21 for the time being
-  pl = 35.f;//Push length
+  radious = 35.f;//Good if it could find this by itself, but can be put to >21 for the time being
+  pl = 40.f;//Push length
   te = 5.f;//Tolerated error
   tlcm = 5;//Tic-lagg-counter max
   tlc = tlcm;//Tic-lagg-counter
@@ -72,11 +72,13 @@ BicSpli::Init()
   rota = 2*pi/noR;
   ercou = 0;//Error counter
   ercouli = 5;//Errors before new shape is needed
+  tco = 0;
 }
 
 void
 BicSpli::Tick()
 {
+  ++tco;
   noR = (int)norin[0];
   rota = 2*pi/noR;
   nns[0] = 0.f;
@@ -98,7 +100,7 @@ BicSpli::Tick()
   float tpd = sqrt(pow((pupo[0]-tapo[0]), 2) + pow((pupo[1]-tapo[1]),2));//Target-pushable distance
   if(tpd < 0.03f){//If at goal
     //printf("Error (tpd): %f\n", tpd);
-    printf("             ~*\\Done/*~             \n");
+    printf("%i:             ~*\\Done/*~             \n", tco);
     ddone = true;
     //just = true;
     //pmode = false;
@@ -563,22 +565,38 @@ BicSpli::NSH()
 float
 BicSpli::findTA(float fbd)
 {
-  if((pupoo[0]-pupo[0]) > 0){
+  /*
+    if((pupoo[0]-pupo[0]) > 0){
     return acos((pupoo[1]-pupo[1])/fbd);//+pi/2;
+    }
+    else{
+    return -(acos((pupoo[1]-pupo[1])/fbd));//+pi/2);
+    }
+  */
+  if((pupoo[1]-pupo[1]) > 0){
+    return -acos((pupoo[0]-pupo[0])/fbd);
   }
   else{
-    return -(acos((pupoo[1]-pupo[1])/fbd));//+pi/2);
+    return -acos(-(pupoo[0]-pupo[0])/fbd) + pi;
   }
 }
 
 float
 BicSpli::findTPA(float fbd)
 {
-  if((pupo[0]-tapo[0]) > 0){
+  /*
+    if((pupo[0]-tapo[0]) > 0){
     return acos((pupo[1]-tapo[1])/fbd);//+pi/2;
+    }
+    else{
+    return -(acos((pupo[1]-tapo[1])/fbd));//+pi/2);
+    }
+  */
+  if((pupo[1]-tapo[1]) > 0){
+    return mtci(acos(-(pupo[0]-tapo[0])/fbd)-pi);
   }
   else{
-    return -(acos((pupo[1]-tapo[1])/fbd));//+pi/2);
+    return mtci(acos((pupo[0]-tapo[0])/fbd));
   }
 }
 /*

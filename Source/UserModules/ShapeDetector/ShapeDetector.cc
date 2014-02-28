@@ -25,6 +25,7 @@
 #include <vector>
 
 using namespace ikaros;
+using namespace std;
 
 void
 ShapeDetector::Init()
@@ -43,7 +44,7 @@ ShapeDetector::Init()
   boardSize=25;//Size of black board around the input image in memory
   sizeXLarge=480.f;//Size of the original image, x
   sizeYLarge=640.f;//Size of the original image, y
-  pi=atan(1.f)*4.f;//Pi
+  //pi=atan(1.f)*4.f;//Pi
 
   outputImage=GetOutputMatrix("OUTPUT_IMAGE");//Output image
   imageMetaData=GetOutputArray("IMAGE_META_DATA");//Information on shape index, orientation, etc. If more images exists, this should be a matrix
@@ -116,12 +117,12 @@ ShapeDetector::Tick()
   }
   if(referenceShapes.size()>0){
     RecogniseShape();
-    newCenter[0]/=sizeXLarge;//Should be in a loop
-    newCenter[1]/=sizeYLarge;//Should be in a loop
+    imageMetaData[2]/=sizeXLarge;//Should be in a loop
+    imageMetaData[3]/=sizeYLarge;//Should be in a loop
   }
   else{
-    newCenter[0]=inputCenters[0][0]/sizeXLarge;//Should be in a loop
-    newCenter[1]=inputCenters[0][1]/sizeYLarge;//Should be in a loop
+    imageMetaData[2]=inputCenters[0][0]/sizeXLarge;//Should be in a loop
+    imageMetaData[3]=inputCenters[0][1]/sizeYLarge;//Should be in a loop
   }
   //Is largest radius possible to find?
   //Yes, using information from the croping process when the shape was created
@@ -147,7 +148,7 @@ ShapeDetector::RecogniseShape()
 	    imageMetaData[2]=inputCenters[0][0]+(k+boardSize);//New center in x
 	    imageMetaData[3]=inputCenters[0][1]+(j+boardSize);//New center in y
 	    //imageMetaData[4]=numberOfRotations;//referenceShapes[i].size();
-	    imageMetaData[5]=shapeRadius[i];//Largest radius;
+	    imageMetaData[5]=shapeRadius;//Largest radius;
 	    ko=k;
 	    jo=j;
 	    lo=l;
@@ -161,7 +162,7 @@ ShapeDetector::RecogniseShape()
     int l=lo;
     for(int m=0; m<sizeX+2*boardSize; ++m){
       for(int n=0; n<sizeY+2*boardSize; ++n){
-	if(jo+m>=0 && sizeX>jo+m && ko+n>=0 && siY>ko+n){//>=0
+	if(jo+m>=0 && sizeX>jo+m && ko+n>=0 && sizeY>ko+n){//>=0
 	  outputImage[m][n]=(inputImage[jo+m][ko+n]+referenceShapes[i][l][m][n])/2;
 	}
       }
@@ -229,10 +230,10 @@ ShapeDetector::LearnNewShape()
   //Add the cropped part to the center of a vectorvector
   int shapeLengthX = cropEdge[1]-cropEdge[0];//Largest distance of shape in x
   int shapeLengthY = cropEdge[3]-cropEdge[2];//Largest distance of shape in y
-  shapeRadius.push_back(ceil(sqrt(pow((shapeLengthX/2),2.0)+pow((shapeLengthY/2),2.0))));//Finding the largest possible radius, rounding up
+  shapeRadius=(ceil(sqrt(pow((shapeLengthX/2),2.0)+pow((shapeLengthY/2),2.0))));//Finding the largest possible radius, rounding up
   for(int ii=0; ii<shapeLengthX; ++ii){
     for(int jj=0; jj<shapeLengthY; ++jj){
-      croppedCentredBackground[ii+(sizeX-shapeLengthX)/2][jj+(siY-shapeLengthY)/2]=inputImage[ii+cropEdge[0]][jj+cropEdge[2]];
+      croppedCentredBackground[ii+(sizeX-shapeLengthX)/2][jj+(sizeY-shapeLengthY)/2]=inputImage[ii+cropEdge[0]][jj+cropEdge[2]];
     }
   }
   /*******

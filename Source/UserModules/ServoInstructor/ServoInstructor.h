@@ -1,4 +1,4 @@
-/
+//
 //	ServoInstructor.cc		This file is a part of the IKAROS project
 //
 //    Copyright (C) 2013 <Author Name>
@@ -35,7 +35,7 @@ class ServoInstructor: public Module
   float * servoNext;
   float * servoPresent;
   float * cartesianOutput;
-  float pi;
+  //float pi;
   float segmentLength;
   bool smooth;
 

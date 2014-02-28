@@ -44,7 +44,7 @@ ServoInstructor::Init()
   //zShift//mspec[2]-newFingerInstructions[2]//k = 10.f+el[0];//Arm base from table (mm)
   //mspec[5]//fe = 60.f;//Extention of finger (mm)
   //mspec[9]//h = 525.f;//Camera hight from surface (mm)
-  pi = atan(1.f)*4.f;//Pi
+  //pi = atan(1.f)*4.f;//Pi
 }
 
 void
