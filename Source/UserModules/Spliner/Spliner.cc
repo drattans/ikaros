@@ -63,7 +63,7 @@ Spliner::Init()
   // abcx = GetFloatValue("ABCX", 0.5f);//Arm base coordinate (x)
   // abcy = GetFloatValue("ABCY", 1.f);//Arm base coordinate (y)
   // noR = (int)norin[0];
-  pi = atan(1.f)*4.f;//Pi
+  // pi = atan(1.f)*4.f;//Pi
   // h = 525.f;//Camera hight from surface (mm)
   if(!oldFingerInstructions){//=if(oldFingerInstructions == NULL){
     oldFingerInstructions = new float[3];
@@ -266,14 +266,14 @@ Spliner::Tick()
       pushMode = false;
       //float ar1 = abs(oldFingerInstructions[0]-cartesianFingerPosition[0]);//Distance to x
       //float ar2 = abs(oldFingerInstructions[1]-cartesianFingerPosition[1]);//Distance to y
-      float temporaryAngleRelativePushable1 = ((pushableData[5]*cos(newPushAngle))/(2.f*h*tan(28.5*pi/180.f)));//Attack position, origo in pushable
-      float temporaryAngleRelativePushable2 = ((pushableData[5]*sin(newPushAngle))/(2.f*h*tan(21.5*pi/180.f)));//Attack position, origo in pushable
+      float temporaryAngleRelativePushable1 = ((pushableData[5]*cos(newPushAngle))/(2*mspec[9]*tan(mspec[7]/2)));//Attack position, origo in pushable
+      float temporaryAngleRelativePushable2 = ((pushableData[5]*sin(newPushAngle))/(2*mspec[9]*tan(mspec[8]/2)));//Attack position, origo in pushable
       float angleRelativePushable1=temporaryAngleRelativePushable1*cos(shift3)+temporaryAngleRelativePushable2*sin(shift3);
       float angleRelativePushable2=-temporaryAngleRelativePushable1*sin(shift3)+temporaryAngleRelativePushable2*cos(shift3);
       newFingerInstructions[0] = pushableData[0] - angleRelativePushable1 + mspec[0];//Attack position
       newFingerInstructions[1] = mspec[1] - pushableData[1] + angleRelativePushable2;//Attack position
-      oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2.f*h*tan(28.5*pi/180.f));
-      oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2.f*h*tan(21.5*pi/180.f));
+      oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
+      oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
     }
 
     /***
@@ -286,16 +286,16 @@ Spliner::Tick()
       }
       else{
 	ticLaggCounter2=ticLagg;
-	float temporaryAngleRelativePushable1 = (((pushableData[5]-pushableData[5])*cos(newPushAngle))/(2*h*tan(28.5*pi/180)));//Finger target, origo in pushable
-	float temporaryAngleRelativePushable2 = (((pushableData[5]-pushableData[5])*sin(newPushAngle))/(2*h*tan(21.5*pi/180)));//Finger target, origo in pushable
+	float temporaryAngleRelativePushable1 = (((pushableData[5]-pushableData[5])*cos(newPushAngle))/(2*mspec[9]*tan(mspec[7]/2)));//Finger target, origo in pushable
+	float temporaryAngleRelativePushable2 = (((pushableData[5]-pushableData[5])*sin(newPushAngle))/(2*mspec[9]*tan(mspec[8]/2)));//Finger target, origo in pushable
 	float angleRelativePushable1=temporaryAngleRelativePushable1*cos(shift3)+temporaryAngleRelativePushable2*sin(shift3);
 	float angleRelativePushable2=-temporaryAngleRelativePushable1*sin(shift3)+temporaryAngleRelativePushable2*cos(shift3);
 	temporaryGoal[0] = pushableData[0] - angleRelativePushable1 + mspec[0];//Finger target
 	temporaryGoal[1] = mspec[1] - pushableData[1] - angleRelativePushable2;//Finger target
 	newFingerInstructions[0] = temporaryGoal[0];
 	newFingerInstructions[1] = temporaryGoal[1];
-	oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*h*tan(28.5*pi/180));
-	oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*h*tan(21.5*pi/180));
+	oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
+	oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
 	printf("NewPushAngle: %f, AngleToGoal: %f\n", newPushAngle, angleToGoal);
 	oldPushableData[0] = pushableData[0];
 	oldPushableData[1] = pushableData[1];
@@ -309,8 +309,8 @@ Spliner::Tick()
     else if((abs(oldFingerInstructions[0]-cartesianFingerPosition[0])>toleratedError || abs(oldFingerInstructions[1]-cartesianFingerPosition[1])>toleratedError)){
       newFingerInstructions[0] = temporaryGoal[0];
       newFingerInstructions[1] = temporaryGoal[1];
-      oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*h*tan(28.5*pi/180));
-      oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*h*tan(21.5*pi/180));
+      oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
+      oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
     }
 
     /***

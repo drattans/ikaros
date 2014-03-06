@@ -33,6 +33,7 @@ class ShapeDetector: public Module
   static Module * Create(Parameter * p) { return new ShapeDetector(p); }
 
   float * imageMetaData;
+  float * needToLearn;
 
   float ** inputImage;
   float ** inputCenters;
@@ -48,7 +49,6 @@ class ShapeDetector: public Module
   float sizeYLarge;
   float shapeRadius;
   //float pi;
-  bool needToLearn;
 
   std::vector<std::vector<std::vector<std::vector<float>>>> referenceShapes; 
 

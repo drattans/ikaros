@@ -36,7 +36,7 @@ ShapeDetector::Init()
   sizeX=GetInputSizeX("INPUT_IMAGE");//Size of the small images, x, should be 100
   sizeY=GetInputSizeY("INPUT_IMAGE");//Size of the small images, y, should be 100
   dilationLoops=GetIntValue("DILATION_LOOPS", 1);//Number of dilation loops
-  needToLearn=GetBoolValue("NEED_TO_LEARN", true);//Need to learn new shape
+  needToLearn=GetInputArray("NEED_TO_LEARN");//Need to learn new shape
   numberOfImages=GetIntValue("NUMBER_OF_IMAGES", 1);//Number of images as input
   inputCenters=GetInputMatrix("INPUT_CENTERS");//Coordinates to the centers of the small images in the large image ((x1,y1), (x2,y2), ...)
   numberOfRotations=GetIntValue("NUMBER_OF_ROTATIONS", 1);//Total number of rotated versions of each image
@@ -45,6 +45,8 @@ ShapeDetector::Init()
   sizeXLarge=480.f;//Size of the original image, x
   sizeYLarge=640.f;//Size of the original image, y
   //pi=atan(1.f)*4.f;//Pi
+
+  needToLearn[0]=1.f;
 
   outputImage=GetOutputMatrix("OUTPUT_IMAGE");//Output image
   imageMetaData=GetOutputArray("IMAGE_META_DATA");//Information on shape index, orientation, etc. If more images exists, this should be a matrix
@@ -103,7 +105,7 @@ ShapeDetector::Tick()
    * Learning and recognising shapes
    **/
   //Should be a for-loop is there are more than one input image
-  if(needToLearn==true || referenceShapes.size()==0){
+  if(needToLearn[0]>0.5f || referenceShapes.size()==0){
     float averageIntensity=0;
     for(int i=0; i<sizeX; ++i){
       for(int j=0; j<sizeY; ++j){
@@ -277,7 +279,7 @@ ShapeDetector::LearnNewShape()
     rotatedShapeVector.push_back(shapeVector);
   }
   referenceShapes.push_back(rotatedShapeVector);
-  needToLearn=false;
+  needToLearn[0]=0.f;
 }
 
 static InitClass init("ShapeDetector", &ShapeDetector::Create, "Source/UserModules/ShapeDetector/");

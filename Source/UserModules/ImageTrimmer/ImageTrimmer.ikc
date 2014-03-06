@@ -14,7 +14,7 @@
   
   <module class="ImageTrimmer" />
 
-  <input name="INPUT_IMAGE" description="Input image" size_x="100" size_y="100"/>
+  <input name="INPUT_IMAGE" description="Input image"/>
   <input name="INPUT_CENTERS" description="Input centers" size_x="1" size_y="2"/>
 
   <output name="OUTPUT_IMAGE" description="Output image" size_x="100" size_y="100"/>

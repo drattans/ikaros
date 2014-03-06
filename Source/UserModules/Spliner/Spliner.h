@@ -49,7 +49,6 @@ class Spliner: public Module
   float * causeEffect;
   float * temporaryGoal;
 
-  float pi;
   float shift2;
   float shift3;
   float pushMarginal;
@@ -59,8 +58,6 @@ class Spliner: public Module
   float angleToGoal;
   float oldAngleToGoal;
 
-
-  int h;
   int ticLagg;
   int ticLaggCounter;
   int ticLaggCounter2;

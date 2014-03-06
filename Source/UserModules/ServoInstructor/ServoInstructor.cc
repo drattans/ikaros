@@ -71,10 +71,10 @@ ServoInstructor::Tick()
       if(smooth==false){
 	float x1 = pi/2 + asin(zShift/temporaryPolar[1]) - acos((pow(mspec[3],2) + pow(temporaryPolar[1],2) + pow(zShift,2) - pow(mspec[4],2))/(2*sqrt(pow(temporaryPolar[1],2)+pow(zShift,2))*mspec[3]));
 	float x2 = pi - acos((pow(mspec[3],2) + pow(mspec[4],2) - pow(temporaryPolar[1],2) - pow(zShift,2))/(2*mspec[3]*mspec[4]));
-	servoNext[0] = 180.f + temporaryPolar[0]*180.f/pi;//Shoulder (angle)
-	servoNext[1] = 180.f - (x1 * 180.f/pi);//Shoulder (radious)
-	servoNext[2] = 180.f - (x2 * 180.f/pi);//Elbow (radious)
-	servoNext[3] = 270.f - ((x1+x2) * 180.f/pi);//Wrist
+	servoNext[0] = pi + temporaryPolar[0];//Shoulder (angle)
+	servoNext[1] = pi - x1;//Shoulder (radious)
+	servoNext[2] = pi - x2;//Elbow (radious)
+	servoNext[3] = 3*pi/2 - (x1+x2);//Wrist
 	//printf("temporaryCartesianx: %f, temporaryCartesiany: %f, temporaryPolarf: %f, temporaryPolarr: %f\n", temporaryCartesian[0], temporaryCartesian[1], temporaryPolar[0], temporaryPolar[1]);
 	//printf("0: %f, 1: %f, 2: %f, 3: %f x1: %f x2: %f\n", servoNext[0], servoNext[1], servoNext[2], servoNext[3], x1, x2);
       }
@@ -84,9 +84,9 @@ ServoInstructor::Tick()
 	float temporaryServoInstructions [4];
 	float temporaryPolarSegment [2];
 	float temporaryCartesianSegment [2];
-	temporaryServoInstructions[0] = (servoPresent[0] - 180.f)*pi/180.f;
-	temporaryServoInstructions[1] = (180.f - servoPresent[1])*pi/180.f;
-	temporaryServoInstructions[2] = (180.f - servoPresent[2])*pi/180.f;
+	temporaryServoInstructions[0] = servoPresent[0] - pi;
+	temporaryServoInstructions[1] = pi - servoPresent[1];
+	temporaryServoInstructions[2] = pi - servoPresent[2];
 	temporaryPolarSegment[0] = temporaryServoInstructions[0]+pi/2;
 	temporaryPolarSegment[1] = sqrt((pow(mspec[3],2) + pow(mspec[4],2) - 2*mspec[3]*mspec[4]*cos(pi-temporaryServoInstructions[2])) - pow(zShift,2)) + mspec[5];
 	temporaryCartesianSegment[0] = temporaryPolarSegment[1]*cos(temporaryPolarSegment[0]);
@@ -100,10 +100,10 @@ ServoInstructor::Tick()
 	  cartesianOutput[1] = mspec[1] + temporaryCartesianSegment[1]/(2*mspec[9]*tan(mspec[8]/2));
 	  float x1 = pi/2 + asin(zShift/temporaryPolar[1]) - acos((pow(mspec[3],2) + pow(temporaryPolar[1],2) + pow(zShift,2) - pow(mspec[4],2))/(2*sqrt(pow(temporaryPolar[1],2)+pow(zShift,2))*mspec[3]));
 	  float x2 = pi - acos((pow(mspec[3],2) + pow(mspec[4],2) - pow(temporaryPolar[1],2) - pow(zShift,2))/(2*mspec[3]*mspec[4]));
-	  servoNext[0] = 180.f + temporaryPolar[0]*180.f/pi;//Shoulder (angle)
-	  servoNext[1] = 180.f - (x1 * 180.f/pi);//Shoulder (radious)
-	  servoNext[2] = 180.f - (x2 * 180.f/pi);//Elbow (radious)
-	  servoNext[3] = 270.f - ((x1+x2) * 180.f/pi);//Wrist
+	  servoNext[0] = pi + temporaryPolar[0];//Shoulder (angle)
+	  servoNext[1] = pi - x1;//Shoulder (radious)
+	  servoNext[2] = pi - x2;//Elbow (radious)
+	  servoNext[3] = 3*pi/2 -(x1+x2);//Wrist
 	}
 
 
@@ -132,10 +132,10 @@ ServoInstructor::Tick()
 	    if(temporaryPolar[0] < pi/2 && temporaryPolar[0] > -pi/2 && temporaryPolar[1] < 240 && temporaryPolar[1] > 90){
 	      float x1 = pi/2 + asin(zShift/temporaryPolar[1]) - acos((pow(mspec[3],2) + pow(temporaryPolar[1],2) + pow(zShift,2) - pow(mspec[4],2))/(2*sqrt(pow(temporaryPolar[1],2)+pow(zShift,2))*mspec[3]));
 	      float x2 = pi - acos((pow(mspec[3],2) + pow(mspec[4],2) - pow(temporaryPolar[1],2) - pow(zShift,2))/(2*mspec[3]*mspec[4]));
-	      servoNext[0] = 180.f + temporaryPolar[0];//Shoulder (angle)
-	      servoNext[1] = 180.f - (x1 * 180.f/pi);//Shoulder (radious)
-	      servoNext[2] = 180.f - (x2 * 180.f/pi);//Elbow (radious)
-	      servoNext[3] = 270.f - ((x1+x2) * 180.f/pi);//Wrist
+	      servoNext[0] = pi + temporaryPolar[0];//Shoulder (angle)
+	      servoNext[1] = pi - x1;//Shoulder (radious)
+	      servoNext[2] = pi - x2;//Elbow (radious)
+	      servoNext[3] = 3*pi/4 -(x1+x2);//Wrist
 	    }
 	    else{
 	      printf("Error (pc): %f, %f\n", temporaryPolar[0], temporaryPolar[1]);
