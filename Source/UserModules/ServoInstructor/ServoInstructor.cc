@@ -64,7 +64,8 @@ ServoInstructor::Tick()
     temporaryPolar[1] = sqrt(pow(temporaryCartesian[0],2)+pow(temporaryCartesian[1],2))-mspec[5];
     cartesianOutput[0] = mspec[0] - temporaryCartesian[0]/(2*mspec[9]*tan(mspec[7]/2));
     cartesianOutput[1] = mspec[1] + temporaryCartesian[1]/(2*mspec[9]*tan(mspec[8]/2));
-    //printf("Xg: %f, Yg: %f\n", cartesianOutput[0], cartesianOutput[1]);
+    printf("mspec(9): %f, mspec(7): %f\n", mspec[9], tan(mspec[7]/2));
+    printf("Xg: %f, Yg: %f\n", temporaryCartesian[0], temporaryCartesian[1]);
     if(temporaryPolar[0] < pi/2 && temporaryPolar[0] > -pi/2 && temporaryPolar[1] < 240 && temporaryPolar[1] > 90){
 
 
@@ -138,14 +139,14 @@ ServoInstructor::Tick()
 	      servoNext[3] = 3*pi/4 -(x1+x2);//Wrist
 	    }
 	    else{
-	      printf("Error (pc): %f, %f\n", temporaryPolar[0], temporaryPolar[1]);
+	      printf("Error (pc1): %f, %f\n", temporaryPolar[0], temporaryPolar[1]);
 	    }
 	  }
 	}
       }
     }
     else{
-      printf("Error (pc): %f, %f\n", temporaryPolar[0], temporaryPolar[1]);
+      printf("Error (pc2): %f, %f\n", temporaryPolar[0], temporaryPolar[1]);
     }
   }
   else{
