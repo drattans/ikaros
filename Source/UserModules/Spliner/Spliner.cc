@@ -160,7 +160,7 @@ Spliner::Tick()
       differentSuccess=false;
       ticLaggCounter=ticLagg;
       oldAngleToGoal=angleToGoal;
-      float distanceMoved = sqrt(pow((pushableData[0]-oldPushableData[0]), 2) + pow((pushableData[1]-oldPushableData[1]),2));
+      float distanceMoved = sqrt(pow((pushableData[2]-oldPushableData[2]), 2) + pow((pushableData[3]-oldPushableData[3]),2));
       oldCauseEffect[0] = causeEffect[0];
       oldCauseEffect[1] = causeEffect[1];
       if(distanceMoved == 0){
@@ -225,7 +225,7 @@ Spliner::Tick()
 	ticLaggCounter=ticLagg;
 	oldAngleToGoal=angleToGoal;
 	pushComplete = false;
-	float distanceMoved = sqrt(pow((pushableData[0]-oldPushableData[0]), 2) + pow((pushableData[1]-oldPushableData[1]),2));
+	float distanceMoved = sqrt(pow((pushableData[2]-oldPushableData[2]), 2) + pow((pushableData[3]-oldPushableData[3]),2));
 	oldCauseEffect[0] = causeEffect[0];
 	oldCauseEffect[1] = causeEffect[1];
 	if(distanceMoved == 0){
@@ -270,10 +270,12 @@ Spliner::Tick()
       float temporaryAngleRelativePushable2 = ((pushableData[5]*sin(newPushAngle))/(2*mspec[9]*tan(mspec[8]/2)));//Attack position, origo in pushable
       float angleRelativePushable1=temporaryAngleRelativePushable1*cos(shift3)+temporaryAngleRelativePushable2*sin(shift3);
       float angleRelativePushable2=-temporaryAngleRelativePushable1*sin(shift3)+temporaryAngleRelativePushable2*cos(shift3);
-      newFingerInstructions[0] = pushableData[0] - angleRelativePushable1 + mspec[0];//Attack position
-      newFingerInstructions[1] = mspec[1] - pushableData[1] + angleRelativePushable2;//Attack position
+      newFingerInstructions[0] = pushableData[2] - angleRelativePushable1 + mspec[0];//Attack position
+      newFingerInstructions[1] = mspec[1] - pushableData[3] + angleRelativePushable2;//Attack position
       oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
       oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
+      printf("Going: pD0: %f, aRP1: %f, mspec0: %f\n", pushableData[2], angleRelativePushable1, mspec[0]);
+      printf("Going: Fi0: %f, Fi1: %f\n", newFingerInstructions[0], newFingerInstructions[1]);
     }
 
     /***
@@ -290,16 +292,17 @@ Spliner::Tick()
 	float temporaryAngleRelativePushable2 = (((pushableData[5]-pushableData[5])*sin(newPushAngle))/(2*mspec[9]*tan(mspec[8]/2)));//Finger target, origo in pushable
 	float angleRelativePushable1=temporaryAngleRelativePushable1*cos(shift3)+temporaryAngleRelativePushable2*sin(shift3);
 	float angleRelativePushable2=-temporaryAngleRelativePushable1*sin(shift3)+temporaryAngleRelativePushable2*cos(shift3);
-	temporaryGoal[0] = pushableData[0] - angleRelativePushable1 + mspec[0];//Finger target
-	temporaryGoal[1] = mspec[1] - pushableData[1] - angleRelativePushable2;//Finger target
+	temporaryGoal[0] = pushableData[2] - angleRelativePushable1 + mspec[0];//Finger target
+	temporaryGoal[1] = mspec[1] - pushableData[3] - angleRelativePushable2;//Finger target
 	newFingerInstructions[0] = temporaryGoal[0];
 	newFingerInstructions[1] = temporaryGoal[1];
 	oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
 	oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
 	printf("NewPushAngle: %f, AngleToGoal: %f\n", newPushAngle, angleToGoal);
-	oldPushableData[0] = pushableData[0];
-	oldPushableData[1] = pushableData[1];
+	oldPushableData[2] = pushableData[2];
+	oldPushableData[3] = pushableData[3];
 	pushInitialised=true;
+	printf("Punshing: Fi0: %f, Fi1: %f\n", newFingerInstructions[0], newFingerInstructions[1]);
       }
     }
 
@@ -311,6 +314,7 @@ Spliner::Tick()
       newFingerInstructions[1] = temporaryGoal[1];
       oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
       oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
+      printf("Still punshing: Fi0: %f, Fi1: %f\n", newFingerInstructions[0], newFingerInstructions[1]);
     }
 
     /***
