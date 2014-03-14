@@ -29,8 +29,8 @@ void
 ImageTrimmer::Init()
 {
   inputImage = GetInputMatrix("INPUT_IMAGE");//Input image
-  sizeX = GetInputSizeX("INPUT_IMAGE");//Size of input image (x)
-  sizeY = GetInputSizeY("INPUT_IMAGE");//Size of input image (y)
+  sizeX = GetInputSizeY("INPUT_IMAGE");//Size of input image (x)
+  sizeY = GetInputSizeX("INPUT_IMAGE");//Size of input image (y)
   numberOfClusters = GetIntValue("NUMBER_OF_CLUSTERS", 1);//Maximum number of clusters
   inputCenters = GetInputMatrix("INPUT_CENTERS");//Coordinates to the centers of the found clusters ((x1,y1), (x2,y2), ...)
 
@@ -47,8 +47,11 @@ ImageTrimmer::Tick()
   int startY;//First pixel in the trimmed image, y
   numberOfClusters=1;//For more than one cluster, an array of images is needed to be sent as output
   for(int i=0; i<numberOfClusters; ++i){//Changing coordinates from fraction of image size to pixel values
-    inputCenters[i][0]=inputCenters[i][0]*sizeX;
-    inputCenters[i][1]=inputCenters[i][1]*sizeY;
+    float temp=inputCenters[i][1]*sizeX;
+    inputCenters[i][1]=inputCenters[i][0]*sizeY;
+    inputCenters[i][0]=temp;//inputCenters[i][1]*sizeY;
+    //printf("Icx: %i, Icy: %i\n", sizeX, sizeY);
+    printf("IcIx: %f, IcIy: %f\n", inputCenters[i][0], inputCenters[i][1]);
   }
   for(int i=0; i<numberOfClusters; ++i){//For all clusters, make an output image
     startX=inputCenters[i][0]-halfSideLength;

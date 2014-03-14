@@ -52,8 +52,8 @@ ShapeDetector::Init()
   imageMetaData=GetOutputArray("IMAGE_META_DATA");//Information on shape index, orientation, etc. If more images exists, this should be a matrix
   imageMetaData[0]=0;//shapeIndex;
   imageMetaData[1]=0;//orientationIndex;
-  imageMetaData[2]=0;//newCenter[0];
-  imageMetaData[3]=0;//newCenter[1];
+  imageMetaData[2]=inputCenters[0][1]*sizeXLarge;//newCenter[0];
+  imageMetaData[3]=inputCenters[0][0]*sizeYLarge;//newCenter[1];
   imageMetaData[4]=numberOfRotations;
   imageMetaData[5]=0;//shapeRadius;
 }
@@ -64,8 +64,10 @@ void
 ShapeDetector::Tick()
 {
   for(int i=0; i<numberOfImages; ++i){//Changing coordinates from fraction of image size to pixel values
-    inputCenters[i][0]=inputCenters[i][0]*sizeXLarge;
-    inputCenters[i][1]=inputCenters[i][1]*sizeYLarge;
+    float temp=inputCenters[i][1]*sizeXLarge;
+    inputCenters[i][1]=inputCenters[i][0]*sizeYLarge;
+    inputCenters[i][0]=temp;//inputCenters[i][1]*sizeYLarge;
+    //printf("IcSx: %f, IcSy: %f\n", inputCenters[i][0], inputCenters[i][1]);
   }
 
   /**
@@ -119,12 +121,20 @@ ShapeDetector::Tick()
   }
   if(referenceShapes.size()>0){
     RecogniseShape();
+    printf("1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    imageMetaData[2]-=boardSize;//Should be in a loop
+    imageMetaData[3]-=boardSize;//Should be in a loop
+    printf("1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     imageMetaData[2]/=sizeXLarge;//Should be in a loop
     imageMetaData[3]/=sizeYLarge;//Should be in a loop
+    printf("1: IcSx: %d, IcSy: %d\n", boardSize, boardSize);
+    printf("1: IcSx: %f, IcSy: %f\n", sizeXLarge, sizeYLarge);
+    printf("1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
   }
   else{
     imageMetaData[2]=inputCenters[0][0]/sizeXLarge;//Should be in a loop
     imageMetaData[3]=inputCenters[0][1]/sizeYLarge;//Should be in a loop
+    printf("2: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
   }
   //Is largest radius possible to find?
   //Yes, using information from the croping process when the shape was created
@@ -134,6 +144,7 @@ void
 ShapeDetector::RecogniseShape()
 {
   int maximumAgreement=0;
+  printf("1");
   for(int i=0; i<referenceShapes.size(); ++i){//For each shape (using brute force)
     int ko;
     int jo;
@@ -154,11 +165,20 @@ ShapeDetector::RecogniseShape()
 	    ko=k;
 	    jo=j;
 	    lo=l;
+	    //printf("IcSx: %f, IcSy: %f\n", inputCenters[0][0], inputCenters[0][1]);
+	    //printf("IcSx: %d, IcSy: %d\n", (k+boardSize), (j+boardSize));
+	    printf("3: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
 	  }
 	}
       }
     }
-
+    imageMetaData[0]=0;//Shape index
+    imageMetaData[1]=0;//Orientation index
+    imageMetaData[2]=inputCenters[0][0]+(boardSize);//New center in x
+    imageMetaData[3]=inputCenters[0][1]+(boardSize);//New center in y
+    //imageMetaData[4]=numberOfRotations;//referenceShapes[i].size();
+    imageMetaData[5]=50;//Largest radius;
+    printf("4:IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     //To be able to inspect how good the estimation is, the input and the guess is
     //merged.
     int l=lo;
@@ -169,6 +189,7 @@ ShapeDetector::RecogniseShape()
 	}
       }
     }
+    //printf("IcSx: %i, IcSy: %i\n", sizeX+2*boardSize, sizeY+2*boardSize);
   }
 }
 
