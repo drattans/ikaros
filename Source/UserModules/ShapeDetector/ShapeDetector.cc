@@ -120,16 +120,15 @@ ShapeDetector::Tick()
     }
   }
   if(referenceShapes.size()>0){
+    printf("A0.5: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     RecogniseShape();
-    printf("1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
-    imageMetaData[2]-=boardSize;//Should be in a loop
-    imageMetaData[3]-=boardSize;//Should be in a loop
-    printf("1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    printf("A1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    //imageMetaData[2]-=boardSize;//Should be in a loop
+    //imageMetaData[3]-=boardSize;//Should be in a loop
+    printf("A2: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     imageMetaData[2]/=sizeXLarge;//Should be in a loop
     imageMetaData[3]/=sizeYLarge;//Should be in a loop
-    printf("1: IcSx: %d, IcSy: %d\n", boardSize, boardSize);
-    printf("1: IcSx: %f, IcSy: %f\n", sizeXLarge, sizeYLarge);
-    printf("1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    printf("A3: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
   }
   else{
     imageMetaData[2]=inputCenters[0][0]/sizeXLarge;//Should be in a loop
@@ -144,11 +143,10 @@ void
 ShapeDetector::RecogniseShape()
 {
   int maximumAgreement=0;
-  printf("1");
+  int ko=0;
+  int jo=0;
+  int lo=0;
   for(int i=0; i<referenceShapes.size(); ++i){//For each shape (using brute force)
-    int ko;
-    int jo;
-    int lo=0;
     for(int l=0; l<numberOfRotations; ++l){//For each orientation
       for(int j=-10-boardSize; j<10-boardSize; ++j){//For each x-position:
 	for(int k=-10-boardSize; k<10-boardSize; ++k){//For each y-position:
@@ -172,20 +170,20 @@ ShapeDetector::RecogniseShape()
 	}
       }
     }
-    imageMetaData[0]=0;//Shape index
-    imageMetaData[1]=0;//Orientation index
-    imageMetaData[2]=inputCenters[0][0]+(boardSize);//New center in x
-    imageMetaData[3]=inputCenters[0][1]+(boardSize);//New center in y
+    //imageMetaData[0]=0;//Shape index
+    //imageMetaData[1]=0;//Orientation index
+    imageMetaData[2]=inputCenters[0][0]+(ko+boardSize);//New center in x
+    imageMetaData[3]=inputCenters[0][1]+(jo+boardSize);//New center in y
     //imageMetaData[4]=numberOfRotations;//referenceShapes[i].size();
-    imageMetaData[5]=50;//Largest radius;
+    //imageMetaData[5]=50;//Largest radius;
     printf("4:IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     //To be able to inspect how good the estimation is, the input and the guess is
     //merged.
-    int l=lo;
-    for(int m=0; m<sizeX+2*boardSize; ++m){
-      for(int n=0; n<sizeY+2*boardSize; ++n){
+    //int l=lo;
+    for(int m=0; m<referenceShapes[i][lo].size(); ++m){//sizeX+2*boardSize
+      for(int n=0; n<referenceShapes[i][lo].size(); ++n){//sizeY+2*boardSize
 	if(jo+m>=0 && sizeX>jo+m && ko+n>=0 && sizeY>ko+n){//>=0
-	  outputImage[m][n]=(inputImage[jo+m][ko+n]+referenceShapes[i][l][m][n])/2;
+	  outputImage[m][n]=inputImage[jo+m][ko+n]/10+referenceShapes[i][lo][m][n]*9/10;
 	}
       }
     }
@@ -201,9 +199,14 @@ ShapeDetector::Evaluate(int jIn, int kIn, int lIn, int iIn)
   for(int m=0; m<sizeX+2*boardSize; ++m){
     for(int n=0; n<sizeY+2*boardSize; ++n){
       if(jIn+m>=0 && sizeX>jIn+m && kIn+n>=0 && sizeY>kIn+n){//>=0
+	//printf("C1a: x: %i, y: %i\n", jIn+m, kIn+n);
         if(inputImage[jIn+m][kIn+n]>0.5 && referenceShapes[iIn][lIn][m][n]>0.5){
+	  //printf("C1b: x: %i, y: %i\n", jIn+m, kIn+n);
 	  ++agreementTemporary;
         }
+      }
+      else{
+	//printf("C2: x: %i, y: %i\n", jIn+m, kIn+n);
       }
     }
   }
