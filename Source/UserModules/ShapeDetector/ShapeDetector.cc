@@ -120,20 +120,20 @@ ShapeDetector::Tick()
     }
   }
   if(referenceShapes.size()>0){
-    printf("A0.5: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    //printf("A0.5: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     RecogniseShape();
-    printf("A1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    //printf("A1: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     //imageMetaData[2]-=boardSize;//Should be in a loop
     //imageMetaData[3]-=boardSize;//Should be in a loop
-    printf("A2: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    //printf("A2: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
     imageMetaData[2]/=sizeXLarge;//Should be in a loop
     imageMetaData[3]/=sizeYLarge;//Should be in a loop
-    printf("A3: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    //printf("A3: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
   }
   else{
     imageMetaData[2]=inputCenters[0][0]/sizeXLarge;//Should be in a loop
     imageMetaData[3]=inputCenters[0][1]/sizeYLarge;//Should be in a loop
-    printf("2: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
+    //printf("2: IcSx: %f, IcSy: %f\n", imageMetaData[2], imageMetaData[3]);
   }
   //Is largest radius possible to find?
   //Yes, using information from the croping process when the shape was created

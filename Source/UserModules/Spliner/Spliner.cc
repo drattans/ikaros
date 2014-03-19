@@ -480,8 +480,8 @@ Spliner::Manage(float fb[])/////////////////////////////////////////////////////
 void
 Spliner::anglesToCartesian(float& input1, float& input2){//Converts the angles to cartesian coordinates
   float inRadians [2];
-  inRadians[0] = (mspec[10] - 180.f)*pi/180.f;
-  inRadians[1] = (180.f - mspec[12])*pi/180.f;
+  inRadians[0] = mspec[10] - pi;
+  inRadians[1] = pi - mspec[12];
   float temporaryAngle = (inRadians[0]+pi/2);
   float temporaryRadius = (sqrt((pow(mspec[3],2) + pow(mspec[4],2) - 2*mspec[3]*mspec[4]*cos(pi-inRadians[1])) - pow((mspec[2]-newFingerInstructions[2]),2)) + mspec[5]);
   input1 = temporaryRadius*cos(temporaryAngle);

@@ -67,10 +67,10 @@ MachineSpecs::Tick()
 {
   //mspec[2] = 10.f+el[0];//Arm base from table (mm)
 
-  mspec[10] = (jointPositionInput[0] + 90.f)*pi/180.f;//Shoulder rotation
-  mspec[11] = (180.f - jointPositionInput[1])*pi/180.f;//Shoulder angle
-  mspec[12] = (180.f - jointPositionInput[2])*pi/180.f;//Elbow angle
-  mspec[13] = (jointPositionInput[3])*pi/180.f;//Wrist angle (probably needs to be adjusted by some angle)
+  mspec[10] = jointPositionInput[0] + pi/2.f;//Shoulder rotation
+  mspec[11] = pi - jointPositionInput[1];//Shoulder angle
+  mspec[12] = pi - jointPositionInput[2];//Elbow angle
+  mspec[13] = jointPositionInput[3];//Wrist angle (probably needs to be adjusted by some angle)
   mspec[6] = sqrt((pow(mspec[3],2) + pow(mspec[4],2) - 2*mspec[3]*mspec[4]*cos(pi-mspec[12])) - pow(mspec[9],2)) + mspec[5];//Shoulder-to-finger length
   mspec[14] = mspec[0] + (mspec[6]*sin(mspec[10])/(2*tan(mspec[7]/2)*mspec[9]));//Finger position, x (fraction of image)
   mspec[15] = mspec[1] + (mspec[6]*cos(mspec[10])/(2*tan(mspec[8]/2)*mspec[9]));//Finger position, y (fraction of image)
