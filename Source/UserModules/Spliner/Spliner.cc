@@ -274,8 +274,11 @@ Spliner::Tick()
       newFingerInstructions[1] = mspec[1] - pushableData[3] + angleRelativePushable2;//Attack position
       oldFingerInstructions[0] = (newFingerInstructions[0] - mspec[0])*(2*mspec[9]*tan(mspec[7]/2));
       oldFingerInstructions[1] = (mspec[1] - newFingerInstructions[1])*(2*mspec[9]*tan(mspec[8]/2));
-      printf("Going: pD0: %f, aRP1: %f, mspec0: %f\n", pushableData[2], angleRelativePushable1, mspec[0]);
-      printf("Going: Fi0: %f, Fi1: %f\n", newFingerInstructions[0], newFingerInstructions[1]);
+      //printf("Going: pD0: %f, aRP1: %f, mspec0: %f\n", pushableData[2], angleRelativePushable1, mspec[0]);
+      //printf("Going: Fi0: %f, Fi1: %f\n", newFingerInstructions[0], newFingerInstructions[1]);
+      //printf("Going: Fi0: %f, Fi1: %f\n", oldFingerInstructions[0], oldFingerInstructions[1]);
+      //printf("Going: Fi0: %f, Fi1: %f\n", cartesianFingerPosition[0], cartesianFingerPosition[1]);
+      //printf("Going: Te0: %f, Te1: %f, Te: %f\n", abs(oldFingerInstructions[0]-cartesianFingerPosition[0]), abs(oldFingerInstructions[1]-cartesianFingerPosition[1]), toleratedError);
     }
 
     /***
@@ -480,12 +483,14 @@ Spliner::Manage(float fb[])/////////////////////////////////////////////////////
 void
 Spliner::anglesToCartesian(float& input1, float& input2){//Converts the angles to cartesian coordinates
   float inRadians [2];
-  inRadians[0] = mspec[10] - pi;
-  inRadians[1] = pi - mspec[12];
-  float temporaryAngle = (inRadians[0]+pi/2);
-  float temporaryRadius = (sqrt((pow(mspec[3],2) + pow(mspec[4],2) - 2*mspec[3]*mspec[4]*cos(pi-inRadians[1])) - pow((mspec[2]-newFingerInstructions[2]),2)) + mspec[5]);
-  input1 = temporaryRadius*cos(temporaryAngle);
-  input2 = temporaryRadius*sin(temporaryAngle);
+  inRadians[0] = mspec[10];//mspec[10] - pi;
+  inRadians[1] = mspec[12];//pi - mspec[12];
+  float temporaryAngle = -(inRadians[0]-pi*3/2);
+  float temporaryRadius = (sqrt((pow(mspec[3],2) + pow(mspec[4],2) - 2*mspec[3]*mspec[4]*cos(pi-inRadians[1])) - pow((mspec[2]+newFingerInstructions[2]),2)) + mspec[5]);
+  input1 = -temporaryRadius*cos(temporaryAngle);
+  input2 = -temporaryRadius*sin(temporaryAngle);
+  //printf("ATC 1: %f, 2: %f\n", temporaryRadius, temporaryAngle);
+  //printf("ATC 1: %f, 2: %f\n", input1, input2);
 }
 
 float

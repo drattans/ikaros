@@ -35,6 +35,7 @@ class ServoInstructor: public Module
   float * servoNext;
   float * servoPresent;
   float * cartesianOutput;
+  float * cartesianOutputPlot;
   //float pi;
   float segmentLength;
   bool smooth;

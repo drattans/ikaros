@@ -18,6 +18,7 @@
   <input name="SERVO_PRESENT" description="Present positions of servos" size="4"/>
 
   <output name="CARTESIAN_OUTPUT" description="Cartesian coordinates (x,y)" size="2"/>
+  <output name="CARTESIAN_OUTPUT_PLOT" description="Cartesian coordinates (x,y)" size="2"/>
   <output name="SERVO_NEXT" description="Angles for the servos (degrees)" size="4"/>
 
   <parameter name="SMOOTH" type="bool" default="yes" description="Makes the movement smooth" />
