@@ -71,9 +71,9 @@ ServoInstructor::Tick()
     cartesianOutputPlot[0]=cartesianOutput[1];
     cartesianOutputPlot[1]=cartesianOutput[0];
     //printf("Fi0: %f, Fi1: %f\n", newFingerInstructions[0], newFingerInstructions[1]);
-    //printf("Xg: %f, Yg: %f\n", temporaryCartesian[0], temporaryCartesian[1]);
+    printf("Xg: %f, Yg: %f\n", temporaryCartesian[0], temporaryCartesian[1]);
     //printf("Xg: %f, Yg: %f\n", cartesianOutput[0], cartesianOutput[1]);
-    //printf("Tp: %f, Tp: %f\n", temporaryPolar[0], temporaryPolar[1]);
+    printf("Tp: %f, Tp: %f\n", temporaryPolar[0], temporaryPolar[1]);
 
     if(temporaryPolar[0] < pi/2 && temporaryPolar[0] > -pi/2 && temporaryPolar[1] < 240 && temporaryPolar[1] > 90){
 
@@ -96,18 +96,19 @@ ServoInstructor::Tick()
 	temporaryServoInstructions[0] = servoPresent[0];//servoPresent[0] - pi;
 	temporaryServoInstructions[1] = servoPresent[1];//pi - servoPresent[1];
 	temporaryServoInstructions[2] = servoPresent[2];//pi - servoPresent[2];
-	temporaryPolarSegment[0] = temporaryServoInstructions[0]-pi*3/2;
+	temporaryPolarSegment[0] = temporaryServoInstructions[0]-pi;
 	temporaryPolarSegment[1] = sqrt((pow(mspec[3],2) + pow(mspec[4],2) - 2*mspec[3]*mspec[4]*cos(pi+temporaryServoInstructions[2])) - pow(zShift,2)) + mspec[5];
-	temporaryCartesianSegment[0] = -temporaryPolarSegment[1]*cos(temporaryPolarSegment[0]);
+	temporaryCartesianSegment[0] = temporaryPolarSegment[1]*cos(temporaryPolarSegment[0]);
 	temporaryCartesianSegment[1] = -temporaryPolarSegment[1]*sin(temporaryPolarSegment[0]);
 	float angleToGoal;
 	float distanceToGoal = sqrt(pow((temporaryCartesianSegment[0]-temporaryCartesian[0]), 2) + pow((temporaryCartesianSegment[1]-temporaryCartesian[1]),2));
-	printf("Xg: %f, Yg: %f\n", temporaryPolarSegment[0], temporaryPolarSegment[1]);
-	printf("Xg: %f, Yg: %f\n", temporaryCartesianSegment[0], temporaryCartesianSegment[1]);
-	printf("Xg: %f, Yg: %f\n", temporaryCartesian[0], temporaryCartesian[1]);
+	printf("Xg: %f, Yg: %f\n", temporaryPolarSegment[0], temporaryPolarSegment[1]);//Ok?
+	printf("Xg: %f, Yg: %f\n", temporaryCartesianSegment[0], temporaryCartesianSegment[1]);//Wrong?
+	printf("Xg: %f, Yg: %f\n", temporaryCartesian[0], temporaryCartesian[1]);//Ok
 	printf("DTG: %f\n", distanceToGoal);
 
 	if(distanceToGoal < segmentLength/2){
+	  printf("DTG: %f\n!!!!!!!!!!!!!!!!!!!!", distanceToGoal);
 	  //cartesianOutput[0] = mspec[0] - temporaryCartesianSegment[0]/(2*mspec[9]*tan(mspec[7]/2));
 	  //cartesianOutput[1] = mspec[1] + temporaryCartesianSegment[1]/(2*mspec[9]*tan(mspec[8]/2));
 	  float x1 = pi/2 + asin(zShift/temporaryPolar[1]) - acos((pow(mspec[3],2) + pow(temporaryPolar[1],2) + pow(zShift,2) - pow(mspec[4],2))/(2*sqrt(pow(temporaryPolar[1],2)+pow(zShift,2))*mspec[3]));
@@ -121,11 +122,11 @@ ServoInstructor::Tick()
 	else{
 	  if((temporaryCartesianSegment[1]-temporaryCartesian[1]) < 0){
 	    angleToGoal = acos(-(temporaryCartesianSegment[0]-temporaryCartesian[0])/distanceToGoal);
-	    //printf("AngleToGoal1: %f\n", angleToGoal);
+	    printf("AngleToGoal1: %f\n", angleToGoal);
 	  }
 	  else{
 	    angleToGoal = acos((temporaryCartesianSegment[0]-temporaryCartesian[0])/distanceToGoal)-pi;
-	    //printf("AngleToGoal2: %f\n", angleToGoal);
+	    printf("AngleToGoal2: %f\n", angleToGoal);
 	  }
 
 	  if(angleToGoal<-pi || angleToGoal>pi){
